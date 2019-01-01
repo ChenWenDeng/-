@@ -7,20 +7,6 @@
                 <img src="http://img5.imgtn.bdimg.com/it/u=2205424427,3655026688&fm=26&gp=0.jpg" alt="">
                 <p>使用 Eend 账号 登录官网</p>
             </div>
-            <!-- <div class="input-container">
-                <form action="" class="form-container">
-                    <label for="">
-                        <input type="text" placeholder="账号">
-                    </label>
-                    <label for="">
-                        <input type="text" placeholder="密码">
-                    </label>
-                    <p><span>注册账号</span><span>忘记密码?</span></p>
-                    <button class="btn btn-success">登录</button>
-                    <button class="btn btn-info">返回</button>
-                </form>
-            </div> -->
-
             <div class="input-container">
                 <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" class="demo-ruleForm form-container">
                     <el-form-item class="input-box" label="用户账号" prop="name">
@@ -43,6 +29,8 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import axios from 'axios'
 export default {
     data() {
       var checkAge = (rule, value, callback) => {
@@ -76,6 +64,7 @@ export default {
         }
       };
       return {
+				nickName:'',
         ruleForm2: {
           pass: '',
           checkPass: '',
@@ -91,14 +80,32 @@ export default {
           name: [
             { validator: checkAge, trigger: 'blur' }
           ]
-        }
+        },
       };
     },
     methods: {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+						//发请求，把用户名，密码和确认密码发过去
+						axios.post("/users/login",{
+								userName   : this.ruleForm2.name,
+								userPwd    : this.ruleForm2.pass,
+								confirmPwd : this.ruleForm2.checkPass
+							}).then((response) =>{
+							let res = response.data;
+							if(res.status == '0'){
+								//保存用户名在 nickName 中
+								this.nickName = res.result.userName;
+								//登录成功跳转到首页 并把用户名带过去
+								this.$router.push({path:'/',query: {userName: this.nickName}});
+							}else{
+								console.log('失败'+res.msg)
+							}
+						})
+							console.log(this.ruleForm2.name)
+							console.log(this.ruleForm2.pass)
+							console.log(this.ruleForm2.checkPass)
           } else {
             console.log('error submit!!');
             return false;
@@ -117,7 +124,6 @@ export default {
     width: 100%;
     height: 750px;
     display: flex;
-    //background: #f3f3f3;
     .login-bg{
         position: absolute;
         top: 0;

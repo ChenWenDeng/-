@@ -12,9 +12,13 @@
           </router-link>
         </el-menu-item>
         <el-menu-item index="1">
-          <router-link to="/login" tag="span">
+          <router-link to="/login" tag="span" v-if="!userName">
             登录
           </router-link>
+					<span v-if="userName">{{userName}}</span>
+					<router-link to="/personal" tag="span" v-if="userName">
+						登出
+					</router-link>
         </el-menu-item>
         <el-menu-item index="2">
           <router-link to="/Register" tag="span">
@@ -53,7 +57,8 @@ export default {
         activeIndex: '1',
         activeIndex2: '1',
         keyWord: '',
-				productAarr:[]
+				productAarr:[],
+				userName: '', //保存用户名
       };
     },
     methods: {
@@ -91,7 +96,9 @@ export default {
 			}
     },
 		mounted(){
-			
+			//获取登录页传递的用户名
+			this.userName = this.$route.query.userName
+			console.log(this.userName)
 		}
 };
 </script>

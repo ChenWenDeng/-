@@ -5,9 +5,6 @@
             <div class="goodDetails-left">
                 <div class="sm-container" >
                     <ul>
-                        <!-- <li class="sm-li" v-for="(img,index) in imgUrl" :key="index" v-on:mouseover='getIndex(img.url)'>
-                            <img :src="img.url" >
-                        </li> -->
 						<li class="sm-li" v-for="(img,index) in detailsArr.smImg" :key="index" ref='listImg' v-on:mouseover='getIndex(img)'>
 						      <img v-lazy="img" >
 			            </li>
@@ -18,13 +15,9 @@
                 </div>
             </div>
             <div class="goodDetails-right">
-                <!-- <h5 class="title">[简约的翻领设计]LuckyOzasec女士灯笼袖珍珠装饰后抽绳侧开叉毛呢外套S68328 珊瑚杏仁色 S</h5> -->
 				<h5 class="title">{{this.detailsArr.productName}}</h5>
                 <p class="price-container"><span class="price-title">价格：</span><span class="price"><i>￥</i>{{this.detailsArr.salePrice}}</span></p>
                 <div class="number-container">
-                    <!-- <span class="iconfont icon-jian"></span>
-                    <input type="text" placeholder="1">
-                    <span class="iconfont icon-jia"></span> -->
                     <el-input-number v-model="num1" @change="handleChange" :min="this.detailsArr.num" :max="10" label="描述文字"></el-input-number>
                 </div>
                 <div class="button-container">
@@ -32,6 +25,7 @@
                         <!-- <button class="btn btn-danger">加入购物车</button> -->
                         加入购物车
                     </router-link>
+					<button  @click="addCart(detailsArr.productId)">点击</button>
                     <router-link class="btn btn-primary" tag="button" to="/order">
                         <!-- <button class="btn btn-primary">加入购物车</button> -->
                         立即购买
@@ -93,6 +87,37 @@ export default {
         handleChange(value) {
             console.log(value);
         },
+		
+		//点击加入购物车
+		addCart(index){
+			//需要传的参数
+// 			var param = {
+// 				productId:index,
+// 				num:this.num1
+// 			}
+// 			axios.post('/goods/addCart',{
+// 				productId:index,
+// 				num:this.num1
+// 			}).then((res)=>{
+// 				if(res.status == '0'){
+// 					alert('成功加入')
+// 				}else{
+// 					console.log('失败'+res.msg)
+// 				}
+// 			})
+			
+			axios.post('/goods/addCart',{
+					productId:index,
+					num:this.num1
+				}).then((response) =>{
+				let res = response.data;
+				if(res.status == '0'){
+					alert('加入成功')
+				}else{
+					console.log('失败'+res.msg)
+				}
+			})
+		}
     },
 	mounted() {
 		//获取msite页面传来的参数保存在detailss

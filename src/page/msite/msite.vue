@@ -42,20 +42,6 @@
 			</div>
 			<div class="swiper-container-row">
 				<div class="swiper-wrapper">
-					<!-- <div class="swiper-slide" v-for="(popular,index) in dataList" :key="index">
-                        <div class="item col-lg-12 col-sm-4 col-xs-6">
-                            <div class="dtl31">
-                                <router-link tag="a" target="_blank" to="/details">
-                                    <img v-lazy="popular.urlImg" :key="popular.urlImg">
-                                    <div class="dtl">
-                                        <h3>{{popular.title}}</h3>
-                                        <p>Integer sollicitudin lacus libero, in iaculis turpis tristique sit amet. Nullam augue elit, feugiat nec arcu eget, sodales feugiat ligula.</p>
-                                        <a href="#">Read More</a>
-                                    </div>
-                                </router-link>
-                            </div>
-                        </div>
-                    </div> -->
 					<div class="swiper-slide" v-for="(official,index) in officials " :key="index" @click="getdetails(official.productId)">
 						<div class="item col-lg-12 col-sm-4 col-xs-6">
 							<div class="dtl31">
@@ -355,10 +341,6 @@
 
 				});
 			})
-// 			this.animations('.reveal-top', 'top')
-// 			this.animations('.reveal-bottom', 'bottom')
-// 			this.animations('.reveal-left', 'left')
-// 			this.animations('.reveal-right', 'right')
 		}
 	}
 </script>
@@ -430,8 +412,6 @@
 		.classification {
 			width: 100%;
 			display: flex;
-			//flex-wrap:wrap;
-			//justify-content: space-around;
 			padding: 20px;
 			background: #000;
 
