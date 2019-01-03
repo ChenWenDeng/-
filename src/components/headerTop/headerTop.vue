@@ -16,9 +16,12 @@
             登录
           </router-link>
 					<span v-if="userName">{{userName}}</span>
-					<router-link to="/personal" tag="span" v-if="userName">
+					<!-- <router-link @click="logout" to="/personal" tag="span" v-if="userName">
 						登出
-					</router-link>
+					</router-link> -->
+					<span @click="logout" v-if="userName">
+						登出
+					</span>
         </el-menu-item>
         <el-menu-item index="2">
           <router-link to="/Register" tag="span">
@@ -93,12 +96,33 @@ export default {
 					})
 					window.open(href, '_blank')
 				}
+			},
+			logout(){
+				axios.post("/users/logout").then((response) =>{
+					let res = response.data;
+					if(res.status == "0"){
+						//清空nickName 用户名
+						this.userName = ''
+						//跳转到login登录页，传参userName 为空
+						this.$router.push({path:'/',login: {userName: this.userName}});
+					}else{
+						console.log('失败'+res.msg)
+					}
+				})
+			},
+			checkLogin(){
+				axios.get("/users/checkLogin").then((response) =>{
+					let res = response.data;
+					if(res.status == "0"){
+						this.userName = res.result.userName;
+					}
+				})
 			}
     },
 		mounted(){
-			//获取登录页传递的用户名
-			this.userName = this.$route.query.userName
-			console.log(this.userName)
+				//获取登录页传递的用户名
+				this.userName = this.$route.query.userName
+				console.log(this.userName)
 		}
 };
 </script>

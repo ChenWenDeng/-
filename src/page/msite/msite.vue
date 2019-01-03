@@ -293,7 +293,7 @@
 		},
 		mounted() {
 			//一打开页面发送请求并接收数据
-			axios.get('/goods').then((response) => {
+			axios.get('/goods/list').then((response) => {
 				let res = response.data;
 				if (res.status == '0') {
 					this.officials = res.result.list;

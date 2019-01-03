@@ -75,7 +75,7 @@
 					keyWord: this.keyWord
 				}
 				//发请求，并把搜索关键字传到后台
-				axios.get('/goods', {
+				axios.get('/goods/list', {
 					params: param
 				}).then((response) => {
 					let res = response.data;
@@ -102,7 +102,7 @@
 						pageSize: this.pageSize,
 						sort: this.sortFlag ? 1 : -1,
 					}
-					axios.get('/goods',{
+					axios.get('/goods/list',{
 						//如果nosortLeng>8就说明需要排序，从后台传来的数据个数是8
 						params: this.nosortLeng > 8 ? '' : param2 //如果nosortLeng>8的话就取''否则去param2的参数 
 					}).then((response) => {
@@ -125,7 +125,7 @@
 						keyWord: this.keyWord
 					}
 					//发请求，并把搜索关键字传到后台
-					axios.get('/goods', {
+					axios.get('/goods/list', {
 						params: param
 					}).then((response) => {
 						let res = response.data;
@@ -169,7 +169,7 @@
 					sort: this.sortFlag ? 1 : -1,  //如果是true取1 否则取-1
 				}
 				//发请求，并把搜索关键字传到后台
-				axios.get('/goods', {
+				axios.get('/goods/list', {
 					params: param
 				}).then((response) => {
 					let res = response.data;
@@ -203,7 +203,7 @@
 					sort: this.sortFlag ? 1 : -1,
 				}
 				//发请求，并把搜索关键字传到后台
-				axios.get('/goods', {
+				axios.get('/goods/list', {
 					//如果nosortLeng>8就说明需要排序，从后台传来的数据个数是8
 					params: this.nosortLeng > 8 ? param : param2  //如果nosortLeng>8的话就取param的参数否则去param2的参数 
 				}).then((response) => {

@@ -5,13 +5,12 @@ import $ from 'jquery'
 import App from './App'
 import router from './router'
 import ElementUI from 'element-ui';
-import VueLazyLoad from 'vue-lazyload'
-
+import VueLazyLoad from 'vue-lazyload'  //图片懒加载
+ 
 
 import 'element-ui/lib/theme-chalk/index.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min.js'
-
 
 Vue.use(ElementUI);
 Vue.use(VueLazyLoad,{

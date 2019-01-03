@@ -22,6 +22,9 @@ const personalAccount = () => import('../page/personal/account/account')
 const personalAddress = () => import('../page/personal/address/address')
 const commodity = () => import('../page/commodity/commodity')  //商品页
 
+
+const addresses = () => import('../page/order/addresses') //订单页
+
 Vue.use(Router)
 
 export default new Router({
@@ -88,6 +91,11 @@ export default new Router({
 			path: '/commodity',
 			name: 'commodity',
 			component: commodity
+		},
+		{
+			path: '/addresses',
+			name: 'addresses',
+			component: addresses
 		},
   ]
 })

@@ -2,7 +2,7 @@
     <div class="shopping">
         <headerTop/>
         <div class="main-container">
-            <div class="empty-container" v-if="goodsList.length==0">
+            <div class="empty-container" v-if="cartList.length==0">
                 <h1>购物车空空如也~~~~</h1>
             </div>
             <table v-else class="cartTable">
@@ -17,15 +17,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(goods,index) in goodsList"  :key="index">
+                    <tr v-for="(goods,index) in cartList"  :key="index">
                         <!-- <td class="checkbox"><input class="check-one check" type="checkbox"/></td> -->
-                        <td class="goods"><img :src="goods.urlImg" alt=""/><span>{{goods.name}}</span></td>
-                        <td class="price">{{goods.price}}</td>
-                        <td class="count"><span class="reduce"><i v-show="goods.num>1" @click="reduce(index)">-</i></span><input class="count-input" type="text" v-model="goods.num"/><span class="add" @click="add(index)">+</span></td>
-                        <td class="subtotal">{{goods.price*goods.num}}</td>
-                        <!-- <td class="operation"><span class="delete" @click="del(index)">删除</span></td> -->
-                        <!-- <td class="operation"><span class="delete btn btn-danger" @click="dialogVisible = true;" >删除</span></td> -->
-                        <td class="operation"><span class="delete btn btn-danger" @click="dele(index)" >删除</span></td>
+                        <td class="goods"><img :src="goods.details[0].smImg[0]" alt=""/><span>{{goods.details[0].productName}}</span></td>
+                        <td class="price">{{goods.details[0].salePrice}}</td>
+                        <td class="count"><span class="reduce"><i v-show="goods.details[0].num>1" @click="editCart('minu',goods)">-</i></span><input class="count-input" type="text" v-model="goods.details[0].num"/><span class="add"@click="editCart('add',goods)">+</span></td>
+                        <td class="subtotal">{{goods.details[0].salePrice * goods.details[0].num}}</td>
+                        <td class="operation"><span class="delete btn btn-danger" @click="dele(goods._id)" >删除</span></td>
                     </tr>
                     <tr class="total-box">
                         <td  colspan="5" >
@@ -56,6 +54,8 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import axios from 'axios'
 import headerTop from '../../components/headerTop/headerTop'
 import Footer from '../../components/footer/footer'
 export default {
@@ -65,9 +65,11 @@ export default {
     },
     data(){
         return{
+						cartList:[],
+						cartListDetails:[],
             allChecked:true,//全选状态,
             dialogVisible: false,
-            indexs: null,
+            cart_id: null, //保存商品要删除的id
             goodsList:[
                        {    id:1,
                             urlImg:'http://p3.vanclimg.com/232/232/product/6/3/7/6373824/mid/6373824-1j201709151927089726.jpg',
@@ -109,18 +111,58 @@ export default {
         }
     },
     methods:{
-        add(index){
-            this.goodsList[index].num++
+        editCart(flag,goods){
+            if(flag == 'add'){
+							goods.details[0].num++;
+						}else{
+							goods.details[0].num--;
+						}
+						
+						axios.post('/users/cartEdit',{
+								productId : goods.details[0].productId,
+								num 			: goods.details[0].num
+							}).then((response) =>{
+							let res = response.data;
+							if(res.status == '0'){
+								console.log('成功')
+							}else{
+								console.log('失败'+res.msg)
+							}
+						})
         },
-        reduce(index){
-            this.goodsList[index].num--
-        },
-        dele(index){
+//         reduce(index){
+//             this.goodsList[index].num--
+//         },
+				//删除购物车
+        dele(cart_id){
             this.dialogVisible = true
-            this.indexs = index
+            this.cart_id = cart_id
+						console.log(this.cart_id)
+						
+// 						axios.post('/users/cartDel',{
+// 								cart_id:cart_id,
+// 							}).then((response) =>{
+// 							let res = response.data;
+// 							if(res.status == '0'){
+// 								console.log('成功')
+// 								this.init()
+// 							}else{
+// 								console.log('失败'+res.msg)
+// 							}
+// 						})
         },
         del(){
-            this.goodsList.splice(this.indexs,1)
+						axios.post('/users/cartDel',{
+								cart_id:this.cart_id,
+							}).then((response) =>{
+							let res = response.data;
+							if(res.status == '0'){
+								console.log('删除成功')
+								this.init()
+							}else{
+								console.log('失败'+res.msg)
+							}
+						})
         },
         handleClose(done) {
             this.$confirm('确认关闭？')
@@ -128,7 +170,19 @@ export default {
                 done();
             })
             .catch(_ => {});
-        }
+        },
+				init(){
+					axios.get('/users/cartList').then((response) =>{
+						let res = response.data;
+						if(res.status == '0'){
+							this.cartList = res.result;
+							console.log(this.cartList[0].details[0].smImg[0])
+							// console.log(this.cartList[0]._id)
+						}else{
+							console.log('失败'+res.msg)
+						}
+					})
+				}
     },
     mounted(){
         if(this.goodsList){
@@ -138,12 +192,13 @@ export default {
                 type: 'success'
             });
         }
+				this.init()
     },
     computed:{
         totalPrice(){
             var total = 0
-            this.goodsList.forEach((goods,index)=>{
-                total += goods.num * goods.price
+            this.cartList.forEach((goods,index)=>{
+                total += goods.details[0].salePrice * goods.details[0].num
             })
             return total
         }

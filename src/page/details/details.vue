@@ -21,11 +21,11 @@
                     <el-input-number v-model="num1" @change="handleChange" :min="this.detailsArr.num" :max="10" label="描述文字"></el-input-number>
                 </div>
                 <div class="button-container">
-                    <router-link class="btn btn-danger" tag="button" to="/shopping">
-                        <!-- <button class="btn btn-danger">加入购物车</button> -->
+                    <!-- <router-link class="btn btn-danger" tag="button" to="/shopping">
                         加入购物车
-                    </router-link>
-					<button  @click="addCart(detailsArr.productId)">点击</button>
+                    </router-link> -->
+					<button class="btn btn-danger" @click="addCart(detailsArr.productId)">加入购物车</button>
+					<!-- <el-button type="text" @click="centerDialogVisible = true">加入购物车</el-button> -->
                     <router-link class="btn btn-primary" tag="button" to="/order">
                         <!-- <button class="btn btn-primary">加入购物车</button> -->
                         立即购买
@@ -41,8 +41,23 @@
                 <img v-for="(img,index) in detailsArr.detailsImagebag" alt="" v-lazy="img" :key="index">
             </div>
         </div>
+		
+		<el-dialog
+		  title="提示"
+		  :visible.sync="centerDialogVisible"
+		  width="30%"
+		  center>
+		  <span class="modal-text-box">
+			  <i class="iconfont icon-chenggong"></i>
+			  成功添加到购物车
+			</span>
+		  <span slot="footer" class="dialog-footer">
+			<el-button @click="centerDialogVisible = false">继续购物</el-button>
+			<router-link tag="el-button" to="/shopping" @click="centerDialogVisible = false">查看购物车</router-link>
+		  </span>
+		</el-dialog>
         <!-- =====================  footer  ===========================-->
-        <Footer/>
+		<Footer/>
     </div>
 </template>
 
@@ -57,10 +72,11 @@ export default {
     components:{
         headerTop,
         PicZoom,
-        Footer
+        Footer,
     },
     data() {
         return {
+			centerDialogVisible: false,
 			// details:1,
             num1: 1,
 			detailss: 0, //msite页面传来的参数
@@ -90,34 +106,28 @@ export default {
 		
 		//点击加入购物车
 		addCart(index){
-			//需要传的参数
-// 			var param = {
-// 				productId:index,
-// 				num:this.num1
-// 			}
-// 			axios.post('/goods/addCart',{
-// 				productId:index,
-// 				num:this.num1
-// 			}).then((res)=>{
-// 				if(res.status == '0'){
-// 					alert('成功加入')
-// 				}else{
-// 					console.log('失败'+res.msg)
-// 				}
-// 			})
-			
 			axios.post('/goods/addCart',{
 					productId:index,
 					num:this.num1
 				}).then((response) =>{
 				let res = response.data;
 				if(res.status == '0'){
-					alert('加入成功')
+					this.centerDialogVisible = true;
+					this.cart_id = res.result.list._id
+					console.log(res.result.list._id)
+					// this.$router.push({path:'/shopping'});
 				}else{
+					this.open6()
 					console.log('失败'+res.msg)
 				}
 			})
-		}
+		},
+		open6() {
+			this.$notify.error({
+			  title: '错误',
+			  message: '当前未登录，不能加入购物车'
+			});
+		},
     },
 	mounted() {
 		//获取msite页面传来的参数保存在detailss
@@ -130,7 +140,7 @@ export default {
 		}
 		
 		//发请求
-		axios.get('/goods',{
+		axios.get('/goods/list',{
 				params:param
 			}).then((response) =>{
 			let res = response.data;
@@ -285,6 +295,10 @@ export default {
                 background: #000;
             }
         }
+		.modal-text-box{
+			margin-left: 140px;
+			color: orangered;
+		}
     }
 </style>
 

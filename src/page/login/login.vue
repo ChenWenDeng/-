@@ -100,22 +100,39 @@ export default {
 								//登录成功跳转到首页 并把用户名带过去
 								this.$router.push({path:'/',query: {userName: this.nickName}});
 							}else{
-								console.log('失败'+res.msg)
+								this.open6()
 							}
 						})
 							console.log(this.ruleForm2.name)
 							console.log(this.ruleForm2.pass)
 							console.log(this.ruleForm2.checkPass)
           } else {
-            console.log('error submit!!');
+            this.open4()
             return false;
           }
         });
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
-      }
-    }
+      },
+			open6() {
+        this.$notify.error({
+          title: '错误',
+          message: '用户名或密码不正确'
+        });
+      },
+			open4() {
+				this.$notify({
+					title: '警告',
+					message: '请填写符合格式的用户名或密码',
+					type: 'warning'
+				});
+			},
+    },
+		mounted(){
+			//街道到headerTop参数把nickName的用户名清空
+			this.nickName = this.$route.query.userName
+		}
   }
 </script>
 
