@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "area-data": "^5.0.6",
     "axios": "^0.18.0",
     "popper.js": "^1.14.6",
     "vue": "^2.5.2",

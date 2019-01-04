@@ -29,17 +29,22 @@
           </router-link>
         </el-menu-item>
         <el-menu-item index="3">我的订单</el-menu-item>
-        <el-submenu index="4">
+				<el-menu-item index="4">
+					<router-link to="/shopping" tag="span">
+						我的购物车
+					</router-link>
+				</el-menu-item>
+        <el-submenu index="5">
         <template slot="title">
           <router-link to="/personal" tag="span">
             个人中心
           </router-link>
         </template>
-        <el-menu-item index="4-1">购物车</el-menu-item>
-        <el-menu-item index="4-2">积分商城</el-menu-item>
-        <el-menu-item index="4-3">我的会员</el-menu-item>
+        <el-menu-item index="5-1">用户名</el-menu-item>
+        <el-menu-item index="5-2">积分商城</el-menu-item>
+        <el-menu-item index="5-3">我的会员</el-menu-item>
         </el-submenu>
-        <el-menu-item index="5" disabled>在线客服</el-menu-item>
+        <el-menu-item index="6" disabled>在线客服</el-menu-item>
         <el-input class="input-container"
             placeholder="请输入内容"
             v-model="keyWord"

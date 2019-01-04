@@ -28,7 +28,7 @@
                     <tr class="total-box">
                         <td  colspan="5" >
                             总价：<span>{{totalPrice}}</span>
-                            <router-link class="btn btn-primary" tag="button" to="/order">
+                            <router-link class="btn btn-primary" tag="button" to="/addresses">
                                 去结算
                             </router-link>
                         </td>
@@ -66,48 +66,10 @@ export default {
     data(){
         return{
 						cartList:[],
-						cartListDetails:[],
-            allChecked:true,//全选状态,
+						// cartListDetails:[],
+            // allChecked:true,//全选状态,
             dialogVisible: false,
             cart_id: null, //保存商品要删除的id
-            goodsList:[
-                       {    id:1,
-                            urlImg:'http://p3.vanclimg.com/232/232/product/6/3/7/6373824/mid/6373824-1j201709151927089726.jpg',
-                            name:'凡客棉线衫 绞花套衫 男款 米白色',
-                            price:999,
-                            num:1
-                       },
-                       {    id:2,
-                            urlImg:'http://p3.vanclimg.com/232/232/product/6/3/7/6375158/mid/6375158-1j201709190939204939.jpg',
-                            name:'凡客棉线衫 绞花套衫 男款 米白色',
-                            price:1999,
-                            num:1
-                       },
-                       {    id:3,
-                            urlImg:'http://p3.vanclimg.com/232/232/product/6/3/7/6373824/mid/6373824-1j201709151927089726.jpg',
-                            name:'凡客棉线衫 绞花套衫 男款 米白色',
-                            price:939,
-                            num:1
-                       },
-                       {    id:4,
-                            urlImg:'http://p3.vanclimg.com/232/232/product/6/3/7/6375736/mid/6375736-1j201703161122076681.jpg',
-                            name:'凡客棉线衫 绞花套衫 男款 米白色',
-                            price:459,
-                            num:1
-                       },
-                       {    id:5,
-                            urlImg:'http://p3.vanclimg.com/232/232/product/6/3/7/6377950/mid/6377950-1j201709181637233065.jpg',
-                            name:'凡客棉线衫 绞花套衫 男款 米白色',
-                            price:555,
-                            num:1
-                       },
-                       {    id:6,
-                            urlImg:'//h2.appsimg.com/a.appsimg.com/upcb/2018/12/03/9/ias_154380537062855.jpg.webp',
-                            name:'凡客棉线衫 绞花套衫 男款 米白色',
-                            price:669,
-                            num:1
-                       },   
-                    ]
         }
     },
     methods:{
