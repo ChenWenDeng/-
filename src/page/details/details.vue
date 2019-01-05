@@ -109,22 +109,30 @@
 					message: '当前未登录，不能加入购物车'
 				});
 			},
-				
-			//立即购买
+			
+			//立即购买功能
 			purchase(index){
-				axios.post('/goods/addCart', {
-					productId: index,
-					num: this.num1
-				}).then((response) => {
+				//查看购买列表是否有数据，有的话就清空
+				axios.post('/users/delPurchaseList',{
+						productId: index,
+					}).then((response) =>{
 					let res = response.data;
-					if (res.status == '0') {
-						// this.centerDialogVisible = true;
-						this.cart_id = res.result.list._id
-						console.log(res.result.list._id)
-						this.$router.push({path:'/addresses'});
-					} else {
-						this.open6()
-						console.log('失败' + res.msg)
+					if(res.status == '0'){
+						//加入购买列表里
+						axios.post('/users/purchase',{
+								productId: index,
+								num: this.num1
+							}).then((response) =>{
+							let res = response.data;
+							if(res.status == '0'){
+								console.log('立即购买成功')
+							}else{
+								console.log('失败'+res.msg)
+							}
+						})
+						this.$router.push({path: '/addresses', query: {modes: 'purchase'}})
+					}else{
+						console.log('失败'+res.msg)
 					}
 				})
 			}

@@ -2,13 +2,10 @@
     <div class="shopping">
         <headerTop/>
         <div class="main-container">
-            <div class="empty-container" v-if="cartList.length==0">
-                <h1>购物车空空如也~~~~</h1>
-            </div>
-            <table v-else class="cartTable">
+            <table class="cartTable" v-if="cartList.length!=0">
                 <thead>
                     <tr>
-                        <!-- <th><label><input class="check-all check" type="checkbox"/>&nbsp;全选</label></th> -->
+												<th>选择</th>
                         <th>商品</th>
                         <th>单价</th>
                         <th>数量</th>
@@ -18,7 +15,9 @@
                 </thead>
                 <tbody>
                     <tr v-for="(goods,index) in cartList"  :key="index">
-                        <!-- <td class="checkbox"><input class="check-one check" type="checkbox"/></td> -->
+                        <td class="checkbox" >
+													<i class="iconfont icon-danxuanfuxuan" :class="{check: goods.details[0].checked == 1}" @click="editCart('checked',goods)"></i>
+												</td>
                         <td class="goods"><img :src="goods.details[0].smImg[0]" alt=""/><span>{{goods.details[0].productName}}</span></td>
                         <td class="price">{{goods.details[0].salePrice}}</td>
                         <td class="count"><span class="reduce"><i v-show="goods.details[0].num>1" @click="editCart('minu',goods)">-</i></span><input class="count-input" type="text" v-model="goods.details[0].num"/><span class="add"@click="editCart('add',goods)">+</span></td>
@@ -26,15 +25,25 @@
                         <td class="operation"><span class="delete btn btn-danger" @click="dele(goods._id)" >删除</span></td>
                     </tr>
                     <tr class="total-box">
-                        <td  colspan="5" >
+                        <td  colspan="6" >
+														<div class="allCheck">
+															<i class="iconfont icon-danxuanfuxuan" :class="{check:checkAllFlag}" @click="toggleCheckAll"></i>
+															全选
+														</div>
                             总价：<span>{{totalPrice}}</span>
-                            <router-link class="btn btn-primary" tag="button" to="/addresses">
+                            <!-- <router-link class="btn btn-primary" tag="button" to="/addresses" @click="jiesuan">
                                 去结算
-                            </router-link>
+                            </router-link> -->
+														<button class="btn btn-primary" @click="jiesuan">
+																去结算
+														</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
+						<div class="empty-container" v-else>
+								<h1>购物车空空如也~~~~</h1>
+						</div>
             <el-dialog
             title="提示"
             :visible.sync="dialogVisible"
@@ -69,49 +78,58 @@ export default {
 						// cartListDetails:[],
             // allChecked:true,//全选状态,
             dialogVisible: false,
-            cart_id: null, //保存商品要删除的id
+            cart_id: null, //保存商品要删除的id,
         }
     },
+		mounted(){
+				if(this.goodsList){
+						this.$notify({
+								title: '成功',
+								message: '已添加到购物车',
+								type: 'success'
+						});
+				}
+				this.init()
+		},
     methods:{
+				jiesuan(){
+					var num = 0;
+					this.cartList.forEach((item)=>{
+						if(item.details[0].checked == '1'){
+							num++
+						};
+					})
+					if(num > 0){
+						this.$router.push({path: '/addresses', query: {modes: 'cart'}})
+					}
+				},
         editCart(flag,goods){
             if(flag == 'add'){
 							goods.details[0].num++;
-						}else{
+						}else if( flag == 'minu'){
 							goods.details[0].num--;
+						}else{
+							goods.details[0].checked = goods.details[0].checked == "1" ? "0" : "1";
 						}
 						
 						axios.post('/users/cartEdit',{
 								productId : goods.details[0].productId,
-								num 			: goods.details[0].num
+								num 			: goods.details[0].num,
+								checked 	: goods.details[0].checked
 							}).then((response) =>{
 							let res = response.data;
 							if(res.status == '0'){
 								console.log('成功')
+								this.init()
 							}else{
 								console.log('失败'+res.msg)
 							}
 						})
         },
-//         reduce(index){
-//             this.goodsList[index].num--
-//         },
-				//删除购物车
         dele(cart_id){
             this.dialogVisible = true
             this.cart_id = cart_id
 						console.log(this.cart_id)
-						
-// 						axios.post('/users/cartDel',{
-// 								cart_id:cart_id,
-// 							}).then((response) =>{
-// 							let res = response.data;
-// 							if(res.status == '0'){
-// 								console.log('成功')
-// 								this.init()
-// 							}else{
-// 								console.log('失败'+res.msg)
-// 							}
-// 						})
         },
         del(){
 						axios.post('/users/cartDel',{
@@ -144,26 +162,51 @@ export default {
 							console.log('失败'+res.msg)
 						}
 					})
+				},
+				//全选功能
+				toggleCheckAll(){
+					//checkAllFlag 是计算属性不能再次赋值 所以要再声明一个变量
+					var flag = !this.checkAllFlag;
+					this.cartList.forEach((item)=>{
+						item.details[0].checked = flag ? '1' : '0';
+					})
+					axios.post('/users/editCheckAll',{
+							checkAll : flag
+						}).then((response) =>{
+						let res = response.data;
+						if(res.status == '0'){
+							console.log('全选成功')
+							// this.init()
+						}else{
+							console.log('失败'+res.msg)
+						}
+					})
 				}
     },
-    mounted(){
-        if(this.goodsList){
-            this.$notify({
-                title: '成功',
-                message: '已添加到购物车',
-                type: 'success'
-            });
-        }
-				this.init()
-    },
     computed:{
-        totalPrice(){
-            var total = 0
-            this.cartList.forEach((goods,index)=>{
-                total += goods.details[0].salePrice * goods.details[0].num
-            })
-            return total
-        }
+				//控制全选的状态
+				checkAllFlag(){
+					return this.checkedCount == this.cartList.length;
+				},
+				//当前商品选中的数量
+				checkedCount(){
+					var i = 0;
+					this.cartList.forEach((item)=>{
+						if(item.details[0].checked == '1'){
+							i++
+						};
+					})
+					return i
+				},
+				totalPrice(){
+						var total = 0
+						this.cartList.forEach((goods)=>{
+							if(goods.details[0].checked == '1'){
+								total += goods.details[0].salePrice * goods.details[0].num
+							}
+						})
+						return total
+				},
     }
 }
 </script>
@@ -210,6 +253,11 @@ export default {
                 tr{
                     .checkbox {
                         width: 60px;
+												color: #ccc;
+												.check{
+													font-size: 20px;
+													color: mediumseagreen;
+												}
                     }
                     .goods {
                         width: 300px;
@@ -276,13 +324,34 @@ export default {
                     img {
                         width: 100px;
                         height: 80px;
-                        /*border: 1px solid #ccc;*/
                         margin-right: 10px;
                         float: left;
                     }
                 }
                 .total-box{
                     text-align: right;
+										position: relative;
+										.allCheck{
+											display: inline-block;
+											position: absolute;
+											left: 185px;
+											display: flex;
+											align-items: center;
+											margin-top: 10px;
+											text-align: center;
+											.icon-danxuanfuxuan{
+												display: inline-block;
+												width: 25px;
+												height: 25px;
+												margin-top: 2px;
+												color: #ccc;
+												&.check{
+													font-size: 20px;
+													margin-top: -6px;
+													color: mediumseagreen;
+												}
+											}
+										}
                     span{
                         width: 150px;
                         color: red;
