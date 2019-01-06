@@ -20,9 +20,9 @@
 												</td>
                         <td class="goods"><img :src="goods.details[0].smImg[0]" alt=""/><span>{{goods.details[0].productName}}</span></td>
                         <td class="price">{{goods.details[0].salePrice}}</td>
-                        <td class="count"><span class="reduce"><i v-show="goods.details[0].num>1" @click="editCart('minu',goods)">-</i></span><input class="count-input" type="text" v-model="goods.details[0].num"/><span class="add"@click="editCart('add',goods)">+</span></td>
+                        <td class="count"><span class="reduce"><i v-show="goods.details[0].num>1" @click="editCart('minu',goods)">-</i></span><input class="count-input" type="text" v-model="goods.details[0].num"/><span class="add" @click="editCart('add',goods)">+</span></td>
                         <td class="subtotal">{{goods.details[0].salePrice * goods.details[0].num}}</td>
-                        <td class="operation"><span class="delete btn btn-danger" @click="dele(goods._id)" >删除</span></td>
+                        <td class="operation"><span class="delete btn btn-danger" @click="dele(goods._id,goods.details[0].num)" >删除</span></td>
                     </tr>
                     <tr class="total-box">
                         <td  colspan="6" >
@@ -79,6 +79,7 @@ export default {
             // allChecked:true,//全选状态,
             dialogVisible: false,
             cart_id: null, //保存商品要删除的id,
+						cart_num: 0, //删除商品的数量
         }
     },
 		mounted(){
@@ -103,6 +104,7 @@ export default {
 						this.$router.push({path: '/addresses', query: {modes: 'cart'}})
 					}
 				},
+				//点击加减按钮进行修改购物车数量
         editCart(flag,goods){
             if(flag == 'add'){
 							goods.details[0].num++;
@@ -120,17 +122,28 @@ export default {
 							let res = response.data;
 							if(res.status == '0'){
 								console.log('成功')
-								this.init()
+
+								//修改购物车数量状态
+								let num = 0;
+								if(flag == 'add'){
+									num = 1;
+								}else{
+									num = -1
+								}
+								this.$store.dispatch('recordCartCount',num)
 							}else{
 								console.log('失败'+res.msg)
 							}
 						})
         },
-        dele(cart_id){
-            this.dialogVisible = true
-            this.cart_id = cart_id
+				//点击模态框的删除按钮弹出模态框
+        dele(cart_id,cart_num){
+            this.dialogVisible = true;
+            this.cart_id = cart_id;
+						this.cart_num = cart_num;
 						console.log(this.cart_id)
         },
+				//点击模态框的确定按钮进行删除
         del(){
 						axios.post('/users/cartDel',{
 								cart_id:this.cart_id,
@@ -139,11 +152,14 @@ export default {
 							if(res.status == '0'){
 								console.log('删除成功')
 								this.init()
+								//减购物车数量
+								this.$store.dispatch('recordCartCount',-this.cart_num)
 							}else{
 								console.log('失败'+res.msg)
 							}
 						})
         },
+				//关闭模态框
         handleClose(done) {
             this.$confirm('确认关闭？')
             .then(_ => {
@@ -151,6 +167,7 @@ export default {
             })
             .catch(_ => {});
         },
+				//渲染购物车数据
 				init(){
 					axios.get('/users/cartList').then((response) =>{
 						let res = response.data;

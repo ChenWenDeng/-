@@ -12,14 +12,14 @@
           </router-link>
         </el-menu-item>
         <el-menu-item index="1">
-          <router-link to="/login" tag="span" v-if="!userName">
+          <router-link to="/login" tag="span" v-if="!userInfo">
             登录
           </router-link>
-					<span v-if="userName">{{userName}}</span>
+					<span v-if="userInfo">{{userInfo}}</span>
 					<!-- <router-link @click="logout" to="/personal" tag="span" v-if="userName">
 						登出
 					</router-link> -->
-					<span @click="logout" v-if="userName">
+					<span @click="logout" v-if="userInfo">
 						登出
 					</span>
         </el-menu-item>
@@ -32,6 +32,7 @@
 				<el-menu-item index="4">
 					<router-link to="/shopping" tag="span">
 						我的购物车
+						<span class="cartNum" v-if="cartCount>0"><i>{{cartCount}}</i></span>
 					</router-link>
 				</el-menu-item>
         <el-submenu index="5">
@@ -58,6 +59,7 @@
 <script>
 import Vue from 'vue'
 import axios from 'axios'
+import {mapState} from 'vuex'
 export default {
     name: "headerTop",
     data() {
@@ -66,7 +68,6 @@ export default {
         activeIndex2: '1',
         keyWord: '',
 				productAarr:[],
-				userName: '', //保存用户名
       };
     },
     methods: {
@@ -102,32 +103,54 @@ export default {
 					window.open(href, '_blank')
 				}
 			},
+			//用户登出功能
 			logout(){
 				axios.post("/users/logout").then((response) =>{
 					let res = response.data;
-					if(res.status == "0"){
-						//清空nickName 用户名
-						this.userName = ''
-						//跳转到login登录页，传参userName 为空
-						this.$router.push({path:'/',login: {userName: this.userName}});
+					if(res.status == "0"){					
+						//修改用户名状态 修改为空 退出功能
+						this.$store.dispatch('recordUser','')
+						
+						//如果用户退出登录，修改购物车数量为0
+						this.$store.dispatch('initCartCount',0)
+						
+						//跳转到login登录页
+						this.$router.push({path:'/'});
 					}else{
 						console.log('失败'+res.msg)
 					}
 				})
 			},
+			//更新用户名的状态， 得到用户名
 			checkLogin(){
 				axios.get("/users/checkLogin").then((response) =>{
 					let res = response.data;
 					if(res.status == "0"){
-						this.userName = res.result.userName;
+						this.userName = res.result;
+						console.log('this.userName===' +this.userName)
+
+						//修改用户名状态 拿到用户名 登录功能
+						this.$store.dispatch('recordUser',this.userName)
+					}
+				})
+			},
+			//增加购物车数量
+			getCartCount(){
+				axios.get("/users/getCartCount").then((response) =>{
+					let res = response.data;
+					if(res.status == "0"){
+						//增加购物车数量状态
+						this.$store.dispatch('initCartCount',res.result)
 					}
 				})
 			}
     },
 		mounted(){
-				//获取登录页传递的用户名
-				this.userName = this.$route.query.userName
-				console.log(this.userName)
+				this.checkLogin();
+				this.getCartCount()
+		},
+		computed:{
+			...mapState(['userInfo','cartCount'])
 		}
 };
 </script>
@@ -140,10 +163,29 @@ export default {
 .nav-box{
     background: #000;
     padding: 30px;
+		.cartNum{
+			position: relative;
+			display: inline-block;
+			border-radius: 50%;
+			width: 25px;
+			height: 25px;
+			margin-bottom: 3px;
+			background: red;
+			i{
+				position: absolute;
+				top: -1px;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: #fff;
+				font-size: 14px;
+			}
+		}
     .input-container{
         width: 90%;
-//         margin-top:10px;
-//         margin-left: 28%;
 				margin: 30px auto;
 				
     }

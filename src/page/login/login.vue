@@ -95,10 +95,14 @@ export default {
 							}).then((response) =>{
 							let res = response.data;
 							if(res.status == '0'){
-								//保存用户名在 nickName 中
+								
+								// 保存用户名在 nickName 中
 								this.nickName = res.result.userName;
-								//登录成功跳转到首页 并把用户名带过去
-								this.$router.push({path:'/',query: {userName: this.nickName}});
+								
+								//修改用户名状态 拿到用户名 登录功能
+								this.$store.dispatch('recordUser',this.nickName)
+								
+								this.$router.push({path:'/'});
 							}else{
 								this.open6()
 							}

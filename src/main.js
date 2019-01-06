@@ -4,6 +4,7 @@ import Vue from 'vue'
 import $ from 'jquery'
 import App from './App'
 import router from './router'
+import store from './store'
 import ElementUI from 'element-ui';
 import VueLazyLoad from 'vue-lazyload'  //图片懒加载
 
@@ -29,6 +30,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+	store, //使用上store
   components: { App },
   template: '<App/>'
 })

@@ -96,7 +96,8 @@
 						this.centerDialogVisible = true;
 						this.cart_id = res.result.list._id
 						console.log(res.result.list._id)
-						// this.$router.push({path:'/shopping'});
+						//增加购物车数量
+						this.$store.dispatch('recordCartCount',this.num1)
 					} else {
 						this.open6()
 						console.log('失败' + res.msg)

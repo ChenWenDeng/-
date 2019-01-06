@@ -315,7 +315,7 @@
 						this.animations('.reveal-bottom', 'bottom')
 						this.animations('.reveal-left', 'left')
 						this.animations('.reveal-right', 'right')
-					})
+					})					
 
 				} else {
 					this.officials = []
