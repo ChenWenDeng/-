@@ -1,18 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Msite from '../page/msite/msite'
-// import Details from '../page/details/details'
-// import Login from '../page/login/login'
-// import Order from '../page/order/order'
-// import Register from '../page/register/register'
-// import Shopping from '../page/shopping/shopping'
-// import Payment from '../page/payment/payment'
-
 
 const msite = () => import('../page/msite/msite')  //首页
 const details = () => import('../page/details/details')  //详情页
 const login = () => import('../page/login/login') //登录页
-const order = () => import('../page/order/order') //订单页
 const register = () => import('../page/register/register') //注册页
 const shopping = () => import('../page/shopping/shopping') //购物车
 const payment = () => import('../page/payment/payment') //支付
@@ -23,7 +14,8 @@ const personalAddress = () => import('../page/personal/address/address')
 const commodity = () => import('../page/commodity/commodity')  //商品页
 
 
-const addresses = () => import('../page/order/addresses') //订单页
+const addresses = () => import('../page/addresses/addresses') //地址页
+const regSuc = () => import('../page/regSuc/regSuc') //注册成功页
 
 Vue.use(Router)
 
@@ -43,11 +35,6 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: login
-    },
-    {
-      path: '/order',
-      name: 'order',
-      component: order
     },
     {
       path: '/register',
@@ -96,6 +83,11 @@ export default new Router({
 			path: '/addresses',
 			name: 'addresses',
 			component: addresses
+		},
+		{
+			path: '/regSuc',
+			name: 'regSuc',
+			component: regSuc
 		},
   ]
 })

@@ -42,7 +42,11 @@
                 </tbody>
             </table>
 						<div class="empty-container" v-else>
-								<h1>购物车空空如也~~~~</h1>
+								<h1 class="logtext" v-if="loginText">
+									<i class="iconfont icon-cuowu"></i>
+									当前未登录，查看失败！
+								</h1>
+								<h1 v-if="!loginText">购物车空空如也~~~~</h1>
 						</div>
             <el-dialog
             title="提示"
@@ -80,6 +84,7 @@ export default {
             dialogVisible: false,
             cart_id: null, //保存商品要删除的id,
 						cart_num: 0, //删除商品的数量
+						loginText: '',//未登录信息
         }
     },
 		mounted(){
@@ -174,9 +179,10 @@ export default {
 						if(res.status == '0'){
 							this.cartList = res.result;
 							console.log(this.cartList[0].details[0].smImg[0])
-							// console.log(this.cartList[0]._id)
 						}else{
-							console.log('失败'+res.msg)
+							//未登录的信息
+							this.loginText = res.msg
+							console.log(res.msg)
 						}
 					})
 				},
@@ -241,6 +247,16 @@ export default {
                 display: flex;
                 justify-content: center;
                 align-items: center;
+								.logtext{
+									display: flex;
+									align-items: center;
+									font-size: 35px;
+									i{
+										display: inline-block;
+										font-size: 70px;
+										color: red;
+									}
+								}
             }
             .cartTable{
                 width: 80%;

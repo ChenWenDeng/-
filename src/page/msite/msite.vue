@@ -347,6 +347,7 @@
 
 <style lang="scss" scoped>
 	.msite-container {
+		min-width: 1280px;
 		.navbar {
 			padding-top: 20px;
 			padding-bottom: 20px;
@@ -355,6 +356,7 @@
 		}
 
 		.bg-container {
+			min-width: 1280px;
 			.bg-img {
 				z-index: -1;
 				position: absolute;
@@ -363,7 +365,8 @@
 				right: 0;
 				bottom: 0;
 				width: 100%;
-				//background-image: url(http://p0.meituan.net/dpdeal/535e6f3eeec64e782f4eb2bac3426eac1375188.jpg);
+				min-width: 1280px;
+				height: 750px;
 				background-image: url(https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1432676133,1440846621&fm=26&gp=0.jpg);
 					background-size: 100% 100%;
 			}
@@ -391,11 +394,8 @@
 					width: 33%;
 					height: 100%;
 					background: none;
-
 					img {
-						// width: 25rem;
 						width: 100%;
-						// height: 18.75rem;
 						height: 100%;
 					}
 				}
@@ -450,6 +450,7 @@
 
 						.dtl31 {
 							width: 100%;
+							min-width: 227px;
 							background: green;
 							position: relative;
 							overflow: hidden;

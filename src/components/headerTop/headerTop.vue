@@ -1,58 +1,61 @@
 <template>
   <div class="nav-container">
-  <el-menu
-    :default-active="activeIndex"
-    class="el-menu-demo nav-box"
-    mode="horizontal"
-    @select="handleSelect"
-  >     
-        <el-menu-item index="99">
-          <router-link to="/" tag="h1">
-            Eend商城
-          </router-link>
-        </el-menu-item>
-        <el-menu-item index="1">
-          <router-link to="/login" tag="span" v-if="!userInfo">
-            登录
-          </router-link>
-					<span v-if="userInfo">{{userInfo}}</span>
-					<!-- <router-link @click="logout" to="/personal" tag="span" v-if="userName">
-						登出
-					</router-link> -->
-					<span @click="logout" v-if="userInfo">
-						登出
-					</span>
-        </el-menu-item>
-        <el-menu-item index="2">
-          <router-link to="/Register" tag="span">
-            注册
-          </router-link>
-        </el-menu-item>
-        <el-menu-item index="3">我的订单</el-menu-item>
-				<el-menu-item index="4">
-					<router-link to="/shopping" tag="span">
-						我的购物车
-						<span class="cartNum" v-if="cartCount>0"><i>{{cartCount}}</i></span>
-					</router-link>
-				</el-menu-item>
-        <el-submenu index="5">
-        <template slot="title">
-          <router-link to="/personal" tag="span">
-            个人中心
-          </router-link>
-        </template>
-        <el-menu-item index="5-1">用户名</el-menu-item>
-        <el-menu-item index="5-2">积分商城</el-menu-item>
-        <el-menu-item index="5-3">我的会员</el-menu-item>
-        </el-submenu>
-        <el-menu-item index="6" disabled>在线客服</el-menu-item>
-        <el-input class="input-container"
-            placeholder="请输入内容"
-            v-model="keyWord"
-            clearable>
-        </el-input>
-        <el-button class="search-btn" type="success" @click="getSerch">搜索</el-button>
-  </el-menu>
+		<el-menu
+			:default-active="activeIndex"
+			class="el-menu-demo nav-box"
+			mode="horizontal"
+			@select="handleSelect"
+		>     
+					<!-- <div class="d1"> -->
+					<el-menu-item index="99">
+						<router-link to="/" tag="h1">
+							Eend商城
+						</router-link>
+					</el-menu-item>
+					<el-menu-item index="1">
+						<router-link to="/login" tag="span" v-if="!userInfo">
+							登录
+						</router-link>
+						<span v-if="userInfo">{{userInfo}}</span>
+						<!-- <router-link @click="logout" to="/personal" tag="span" v-if="userName">
+							登出
+						</router-link> -->
+						<span @click="logout" v-if="userInfo">
+							登出
+						</span>
+					</el-menu-item>
+					<el-menu-item index="2">
+						<router-link to="/Register" tag="span">
+							注册
+						</router-link>
+					</el-menu-item>
+					<!-- <el-menu-item index="3">我的订单</el-menu-item> -->
+					<el-menu-item index="3">
+						<router-link to="/shopping" tag="span">
+							我的购物车
+							<span class="cartNum" v-if="cartCount>0"><i>{{cartCount}}</i></span>
+						</router-link>
+					</el-menu-item>
+					<el-submenu index="4">
+					<template slot="title">
+						<router-link to="/personal" tag="span">
+							个人中心
+						</router-link>
+					</template>
+					<el-menu-item index="4-1">用户名</el-menu-item>
+					<el-menu-item index="4-2">积分商城</el-menu-item>
+					<el-menu-item index="4-3">我的会员</el-menu-item>
+					</el-submenu>
+					<el-menu-item index="5" disabled>在线客服</el-menu-item>
+		</el-menu>
+		<div class="search-container">
+		<el-input class="input-container"
+				placeholder="请输入搜索内容"
+				v-model="keyWord"
+				clearable @keyup.enter.native="getSerch">
+		</el-input>
+		<el-button class="search-btn" type="success" @click="getSerch">搜索</el-button>
+		</div>
    </div>
 </template>
 
@@ -68,6 +71,7 @@ export default {
         activeIndex2: '1',
         keyWord: '',
 				productAarr:[],
+				userId:0,
       };
     },
     methods: {
@@ -126,11 +130,14 @@ export default {
 				axios.get("/users/checkLogin").then((response) =>{
 					let res = response.data;
 					if(res.status == "0"){
-						this.userName = res.result;
+						this.userName = res.result.userName;
+						this.userId = res.result.userId;
 						console.log('this.userName===' +this.userName)
 
 						//修改用户名状态 拿到用户名 登录功能
 						this.$store.dispatch('recordUser',this.userName)
+						
+						this.$store.dispatch('recordUserId',this.userId)
 					}
 				})
 			},
@@ -157,38 +164,68 @@ export default {
 
 
 <style lang="scss" scoped>
-	.nav-container{
-		width: 100%!important;
-	}
-.nav-box{
-    background: #000;
-    padding: 30px;
-		.cartNum{
+.nav-container{
+	width: 100%!important;
+	.nav-box{
 			position: relative;
-			display: inline-block;
-			border-radius: 50%;
-			width: 25px;
-			height: 25px;
-			margin-bottom: 3px;
-			background: red;
-			i{
-				position: absolute;
-				top: -1px;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				color: #fff;
-				font-size: 14px;
+			height: 200px;
+			background: #000;
+			padding: 30px;
+			.cartNum{
+				position: relative;
+				display: inline-block;
+				border-radius: 50%;
+				width: 25px;
+				height: 25px;
+				margin-bottom: 3px;
+				background: red;
+				i{
+					position: absolute;
+					top: -1px;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					color: #fff;
+					font-size: 14px;
+				}
 			}
+			.input-container{
+					width: 400px;
+					margin: 30px auto;
+					
+			}
+	}	
+	.search-container{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 120px;
+		margin-top: 80px;
+		.input-container{	
+			z-index: 1;
+			position: relative;
+			width: 600px;
+			margin: 30px 0;
+			margin-left: 390px;
+			border-radius: 0;
+			z-index: 1;
+			outline: none;
 		}
-    .input-container{
-        width: 90%;
-				margin: 30px auto;
-				
-    }
+		.search-btn{
+			z-index: 2;
+			position: absolute;
+			top: 30px;
+			left: 987px;
+			width: 150px;
+			height: 40px;
+			border-radius: 0;
+			outline: none
+		}
+	}
 }
 
 </style>

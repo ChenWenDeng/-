@@ -1,10 +1,10 @@
 <template>
+	<div>
+		<headerTop/>
     <div class="login-container">
-        <div class="login-bg">
-        </div>
         <div class="login-box">
             <div class="header-container">
-                <img src="http://img5.imgtn.bdimg.com/it/u=2205424427,3655026688&fm=26&gp=0.jpg" alt="">
+                <div>E</div>
                 <p>使用 Eend 账号 登录官网</p>
             </div>
             <div class="input-container">
@@ -15,25 +15,37 @@
                     <el-form-item class="input-box" label="用户密码" prop="pass">
                         <el-input class="input-con" type="password" v-model="ruleForm2.pass" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item class="input-box" label="确认密码" prop="checkPass">
+                    <el-form-item class="input-box input-buttom" label="确认密码" prop="checkPass">
                         <el-input class="input-con" type="password" v-model="ruleForm2.checkPass" autocomplete="off"></el-input>
                     </el-form-item>
+										<div class="go-container">
+											<router-link class="Gologin" tag="span" to="/">去首页>>></router-link>
+											<router-link class="Gologin" tag="span" to="/register">未注册Eend商城账号，去注册？</router-link>
+										</div>
                     <el-form-item class="input-box">
-                        <el-button class="login-btn" type="primary" @click="submitForm('ruleForm2')">提交</el-button>
+                        <el-button class="login-btn" type="primary" @click="submitForm('ruleForm2')">登录</el-button>
                         <el-button class="reset-btn" @click="resetForm('ruleForm2')">重置</el-button>
                     </el-form-item>
                 </el-form>
             </div>
         </div>
     </div>
+		<Footer/>
+	</div>
 </template>
 
 <script>
 import Vue from 'vue'
 import axios from 'axios'
+import headerTop from '../../components/headerTop/headerTop'
+import Footer from '../../components/footer/footer'
 export default {
+		components:{
+			headerTop,
+			Footer
+		},
     data() {
-      var checkAge = (rule, value, callback) => {
+      var checkUser = (rule, value, callback) => {
         if (!value) {
           return callback(new Error('账户不能为空'));
         }
@@ -45,14 +57,15 @@ export default {
         }
       };
       var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入密码'));
-        } else {
-          if (this.ruleForm2.checkPass !== '') {
-            this.$refs.ruleForm2.validateField('checkPass');
-          }
-          callback();
-        }
+				var uPattern = /^(?!([a-zA-Z]+|\d+)$)[a-zA-Z\d]{6,20}$/;
+
+				if (value === '') {
+					callback(new Error('请输入密码'));
+				}else if(uPattern.test(value)){
+					callback()
+				} else {
+						return callback(new Error('密码要在6~20位之间同时包含数字和字母'));
+				}
       };
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
@@ -65,6 +78,7 @@ export default {
       };
       return {
 				nickName:'',
+				userId: 0,
         ruleForm2: {
           pass: '',
           checkPass: '',
@@ -78,7 +92,7 @@ export default {
             { validator: validatePass2, trigger: 'blur' }
           ],
           name: [
-            { validator: checkAge, trigger: 'blur' }
+            { validator: checkUser, trigger: 'blur' }
           ]
         },
       };
@@ -99,8 +113,12 @@ export default {
 								// 保存用户名在 nickName 中
 								this.nickName = res.result.userName;
 								
+								this.userId = res.result.userId;
+								
 								//修改用户名状态 拿到用户名 登录功能
 								this.$store.dispatch('recordUser',this.nickName)
+								//修改用户id状态
+								this.$store.dispatch('recordUserId',this.userId)
 								
 								this.$router.push({path:'/'});
 							}else{
@@ -111,7 +129,6 @@ export default {
 							console.log(this.ruleForm2.pass)
 							console.log(this.ruleForm2.checkPass)
           } else {
-            this.open4()
             return false;
           }
         });
@@ -125,13 +142,6 @@ export default {
           message: '用户名或密码不正确'
         });
       },
-			open4() {
-				this.$notify({
-					title: '警告',
-					message: '请填写符合格式的用户名或密码',
-					type: 'warning'
-				});
-			},
     },
 		mounted(){
 			//街道到headerTop参数把nickName的用户名清空
@@ -145,16 +155,7 @@ export default {
     width: 100%;
     height: 750px;
     display: flex;
-    .login-bg{
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image: url(https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1543990899137&di=8a24e13ad5832462b00396e934fb3eda&imgtype=0&src=http%3A%2F%2Fgss0.baidu.com%2F94o3dSag_xI4khGko9WTAnF6hhy%2Fzhidao%2Fpic%2Fitem%2F810a19d8bc3eb135237e1570a11ea8d3fc1f44bb.jpg);
-        background-size: 100% 100%;
-        z-index: -1;
-    }
+		background: #f1f1f1;
     .login-box{
         width: 40%;
         margin: 100px auto;
@@ -164,29 +165,49 @@ export default {
         padding-top: 50px;
         border-radius: 20px;
         padding: 30px;
+				box-shadow: 0px 0px 10px 5px #aaa;
         .header-container{
-            width: 100%;
+            width: 100%;;
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             color: #fff;
-            img{
-                width: 50px;
-                height: 50px;
-                border: 2px solid #fff;
-                margin-bottom: 10px;
+            div{
+            		width: 65px;
+								height: 60px;
+								margin-bottom: 10px;
+            		font-size: 50px;
+            		display: flex;
+            		justify-content: center;
+            		align-items: center;
+            		padding-bottom: 2px;
+            		
             }
         }
+				.input-container:hover{
+					box-shadow: 0px 0px 10px 5px cadetblue;
+					-webkit-transform: scale(0.6.1);
+					-moz-transform: scale(1.1);
+					-ms-transform: scale(1.1);
+					-o-transform: scale(1.1);
+					transition: all .8s;
+					z-index: 9999;
+					margin-bottom: 4px;
+				}
         .input-container{
             width: 100%;
             padding: 20px;
-            background: #f3f3f3;
+						background: #fff;
+						transition: bottom .8 linear 0s;
             .form-container{
                 width: 100%;
                 .input-box{
                     display: flex;
-                        justify-content: space-between;
+                    justify-content: space-between;
+										&.input-buttom{
+											margin-bottom: 0;
+										}
                     .input-con{
                         width: 350px;
                     }
@@ -195,6 +216,19 @@ export default {
                     width: 200px;
                 }
             }
+						.go-container{
+							display: flex;
+							justify-content: space-between;
+							padding: 5px 30px 30px 30px;
+							.Gologin{
+								font-size: 13px;
+								color: #c3c3c3;
+								cursor:pointer;
+							}
+							.Gologin:hover{
+								color: #999;
+							}
+						}
         }
     }
 }

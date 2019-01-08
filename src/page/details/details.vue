@@ -39,13 +39,19 @@
 		</div>
 
 		<el-dialog title="提示" :visible.sync="centerDialogVisible" width="30%" center>
-			<span class="modal-text-box">
+			<span class="modal-text-box" v-if="!reqText">
 				<i class="iconfont icon-chenggong"></i>
 				成功添加到购物车
 			</span>
+			<span class="modal-text-box2" v-if="reqText">
+				<i class="iconfont iconfont icon-cuowu"></i>
+				当前未登录，请先登录！
+			</span>
 			<span slot="footer" class="dialog-footer">
-				<el-button @click="centerDialogVisible = false">继续购物</el-button>
-				<router-link tag="el-button" to="/shopping" @click="centerDialogVisible = false">查看购物车</router-link>
+				<el-button @click="centerDialogVisible = false" v-if="!reqText">继续购物</el-button>
+				<router-link tag="el-button" to="/shopping" @click="centerDialogVisible = false" v-if="!reqText">查看购物车</router-link>
+				
+				<router-link tag="el-button" to="/login" @click="centerDialogVisible = false" v-if="reqText">去登录</router-link>
 			</span>
 		</el-dialog>
 		<!-- =====================  footer  ===========================-->
@@ -56,6 +62,7 @@
 <script>
 	import Vue from 'vue'
 	import axios from 'axios'
+	import {mapState} from 'vuex'
 	import headerTop from '../../components/headerTop/headerTop'
 	import Footer from '../../components/footer/footer'
 	import PicZoom from 'vue-piczoom'
@@ -74,7 +81,11 @@
 				detailss: 0, //msite页面传来的参数
 				detailsArr: [], //存放后台传来的数据
 				ImgUrl: [],//大图片默认显示第一张
+				reqText:'',//未登录信息
 			}
+		},
+		computed:{
+			...mapState(['userId'])
 		},
 		methods: {
 			//点击小图片时将图片路径赋值给大图
@@ -88,6 +99,7 @@
 			//点击加入购物车
 			addCart(index) {
 				axios.post('/goods/addCart', {
+					userId: this.userId,
 					productId: index,
 					num: this.num1
 				}).then((response) => {
@@ -99,16 +111,12 @@
 						//增加购物车数量
 						this.$store.dispatch('recordCartCount',this.num1)
 					} else {
-						this.open6()
-						console.log('失败' + res.msg)
+						if(res.status === '10001'){
+							this.reqText = res.msg
+							this.centerDialogVisible =true
+						}
 					}
 				})
-			},
-			open6() {
-				this.$notify.error({
-					title: '错误',
-					message: '当前未登录，不能加入购物车'
-				});
 			},
 			
 			//立即购买功能
@@ -134,9 +142,14 @@
 						this.$router.push({path: '/addresses', query: {modes: 'purchase'}})
 					}else{
 						console.log('失败'+res.msg)
+						if(res.status === '10001'){
+							this.reqText = res.msg
+							this.centerDialogVisible =true
+						}
 					}
 				})
-			}
+			},
+        
 		},
 		mounted() {
 			//获取msite页面传来的参数保存在detailss
@@ -162,7 +175,7 @@
 					this.detailsArr = []
 				}
 			})
-		}
+		},
 
 	}
 </script>
@@ -331,6 +344,13 @@
 		.modal-text-box {
 			margin-left: 140px;
 			color: orangered;
+		}
+		.modal-text-box2{
+			color: orangered;
+			margin-left: 120px;
+		}
+		.el-button{
+			padding: 10px 50px;
 		}
 	}
 </style>

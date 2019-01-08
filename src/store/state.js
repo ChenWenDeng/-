@@ -4,4 +4,5 @@
 export default {
   userInfo: '', //用户信息
   cartCount: 0, //购物车数量
+  userId: 0,//用户id
 }

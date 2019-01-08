@@ -8,6 +8,8 @@ export const RECEIVE_CART_COUNT = 'receive_cart_count' // 接收购物车数量
 
 export const INIT_CART_COUNT = 'init_cart_count' // 接收购物车数量
 
+export const RECEIVE_USER_ID = 'receive_user_id' // 接收用户id
+
 
 
 

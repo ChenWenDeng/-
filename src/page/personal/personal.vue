@@ -1,7 +1,7 @@
 <template>
     <div>
         <headerTop/>
-        <div class="personal-container">
+        <div class="personal-container" v-if="userId != 0">
             <ul class="personal-ul">
                 <div>
                     <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3969814012,482639741&fm=27&gp=0.jpg" alt="">
@@ -15,18 +15,26 @@
                 <router-view></router-view>
             </div>
         </div>
+		<h2 v-if="userId == 0">
+			<i class="iconfont icon-cuowu"></i>
+			当前为登录，无法查看！
+		</h2>
         <Footer/>
     </div>
 </template>
 
 <script>
+import {mapState} from 'vuex'
 import headerTop from '../../components/headerTop/headerTop'
 import Footer from '../../components/footer/footer'
 export default {
     components:{
         headerTop,
         Footer
-    }
+    },
+	computed:{
+		...mapState(['userId'])
+	}
 }
 </script>
 
@@ -70,5 +78,16 @@ export default {
         margin-left: 0;
         border: 0.0625rem solid #ccc;
     }
+}
+h2{
+	min-height: 700px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 35px;
+	.icon-cuowu{
+		font-size: 70px;
+		color: red;
+	}
 }
 </style>
