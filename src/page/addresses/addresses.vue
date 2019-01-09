@@ -7,7 +7,7 @@
 			</header>
 			<div class="information-container">
 				<div class="add-container" v-if="addressLists.length>0" v-for="(item ,index) in addressListFilter" :key="index"
-				 :class="{check:checkIndex == index}" @click="checkIndex = index">
+				 :class="checkIndex?{check:checkIndex == item.isDefault}:{check:checkIndexs == index}" @click="setaddress(index,item.addressId)">
 					<div v-show="!item.isDefault" :class="{modifyBoxTop: addressLists.length>=1}">
 						<!-- <p :class="{defaColor:item.isDefault}" v-show="item.isDefault">默认地址</p> -->
 						<p v-show="!item.isDefault" @click="setDefault(item.addressId)">设置为默认</p>
@@ -29,14 +29,12 @@
 						邮政编码 : {{item.postCode}}
 					</p>
 					<div :class="{modifyBox: addressLists.length>=1}">
-						<!-- <span @click="modify(item.addressId)">修改</span> -->
 						<span @click="open($event,item.addressId)">修改</span>
 						<span @click="delAddress(item.addressId)">删除</span>
 					</div>
 				</div>
 				<div class="add-box">
 					<span class="iconfont icon-jia"></span>
-					<!-- <p @click="dialogFormVisible = true" >增加新地址</p> -->
 					<p @click="open($event)">增加新地址</p>
 				</div>
 				<div class="look" @click="expand">
@@ -44,12 +42,12 @@
 					<i class="iconfont" :class="this.lookTitle == '查看更多' ? 'icon-zhankai' : 'icon-shouqi'"></i>
 				</div>
 			</div>
-			<!-- 			<div class="look" @click="expand">查看更多</div> -->
 		</div>
 
 		<el-dialog title="收货地址" :visible.sync="dialogFormVisible" class="modal-container">
 			<div class="information-box">
 				<div v-if="this.errMsg!=''" class="regular-container">
+					<i class="iconfont icon-cuowu"></i>
 					<p>{{this.errMsg}}</p>
 				</div>
 				<div class="address-container">
@@ -90,9 +88,9 @@
 					</li>
 				</ul>
 				<ul class="commodity-row">
-					<li v-for="(item, index) in cartList" :key="index" v-if="modes!='purchase' && item.details[0].checked=='1'">
+					<li ref="commoditys" v-for="(item, index) in cartList" :key="index" v-if="modes!='purchase' && item.details[0].checked=='1'">
 						<span class="left-box">
-							<img :src="item.details[0].smImg[0]">
+							<img ref="imgs" :src="item.details[0].smImg[0]">
 							<span class="img-title">{{item.details[0].productName}}</span>
 						</span>
 						<span>￥{{item.details[0].salePrice}}</span>
@@ -104,7 +102,7 @@
 
 					<li v-for="(item, index) in purchaseList" :key="index" v-if="modes=='purchase'">
 						<span class="left-box">
-							<img :src="item.details[0].smImg[0]">
+							<img ref="imgs" :src="item.details[0].smImg[0]">
 							<span class="img-title">{{item.details[0].productName}}</span>
 						</span>
 						<span>￥{{item.details[0].salePrice}}</span>
@@ -115,7 +113,7 @@
 				<div class="price-container">
 					<span v-if="modes=='cart'">应付总额：￥{{totalPrice}}</span>
 					<span v-if="modes=='purchase'">应付总额：￥{{purchaseTotalPrice}}</span>
-					<button class="btn btn-primary">
+					<button class="btn btn-primary" @click="subOder">
 						提交订单
 					</button>
 				</div>
@@ -160,11 +158,22 @@
 				modes : '', //接收是购物车方式还是立即购买方式
 				limit : 3, //限制地址列表显示的数量
 				lookTitle : '查看更多', //展开收缩标题
-				checkIndex : '', //地址选中样式
+				checkIndex : true, //默认地址选中样式
+				checkIndexs: 0, //地址选中样式
+				subAddressId: 0,//选中的本次购物的地址id
 
 			}
 		},
 		methods: {
+			//选中的本次购物的地址id
+			setaddress(index,addressId){
+				this.checkIndex = false;
+				this.checkIndexs = index;
+				this.subAddressId = addressId
+				console.log(this.subAddressId)
+			},
+			
+			
 			//打开模态框
 			open(e, addressId) {
 				this.dialogFormVisible = true;
@@ -342,6 +351,11 @@
 						console.log('失败' + res.msg)
 					}
 				})
+			},
+			
+			//提交订单
+			subOder(){
+				this.$router.push({path: '/payment', query: {modes: this.modes,subAddressId:this.subAddressId}})
 			}
 		},
 		computed: {
@@ -369,7 +383,7 @@
 		mounted() {
 			//接收details页的参数判断显示购物车列表还是立即购买列表
 			this.modes = this.$route.query.modes
-			console.log('ssss' + this.modes)
+			console.log('modes===' + this.modes)
 			this.addressInit(),
 			this.cartInit(),
 			this.purchaseInit()
@@ -546,7 +560,10 @@
 					display: flex;
 					justify-content: center;
 					align-items: center;
-
+					i{
+						font-size: 25px;
+						color: red;
+					}
 					p {
 						margin-bottom: 0;
 						color: red;

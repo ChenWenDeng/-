@@ -2,11 +2,7 @@
     <div class="payment-container">
         <headerTop/>
         <div class="main-container">
-            <header>请输入支付的金额</header>
-            <input type="text" v-model="number">
-            <button @click="payment" class="btn btn-primary"  :disabled="!number">
-                立即支付
-            </button>
+            <p>未接入支付接口，{{computeTime}}秒后自动生成本次购物订单</p>
         </div>
         <Footer/>
     </div>
@@ -22,27 +18,31 @@ export default {
     },
     data(){
         return{
-            number:null,
+			computeTime: 0,
+			modes : '', //接收是购物车方式还是立即购买方式
+			subAddressId: 0,//选中的本次购物的地址id
         }
     },
     methods:{
-        payment(){
-            if(this.number!=399){
-                this.$notify({
-                    title: '警告',
-                    message: '金额不正确,请重新输入',
-                    type: 'warning'    
-                });
-            }else{
-                this.$notify({
-                title: '成功',
-                message: '支付成功',
-                type: 'success'
-                });
-                this.$router.push({path:'/'});
-            }
-        }
-    }
+       
+    },
+	mounted(){
+		this.computeTime = 3
+		this.intervalId = setInterval(()=>{
+			this.computeTime--
+			if(this.computeTime<=0){
+				//停止计时
+				clearInterval(this.intervalId)
+				this.$router.push({path: '/orderSuc', query: {modes: this.modes,subAddressId:this.subAddressId}})
+			}
+		},1000)
+		
+		//接收addresses页的参数判断显示购物车列表还是立即购买列表
+		this.modes = this.$route.query.modes;
+		this.subAddressId = this.$route.query.subAddressId;
+		console.log('modes===' + this.modes)
+		console.log('subAddressId===' + this.subAddressId)
+	}
 }
 </script>
 
@@ -56,14 +56,7 @@ export default {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        input{
-            width: 300px;
-            height:50px;
-            border: 2px solid #000;
-            padding: 5px 30px;
-            margin:30px;
-            text-align: center;
-        }
+        
     }
 }
 </style>

@@ -1,21 +1,23 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-const msite = () => import('../page/msite/msite')  //首页
-const details = () => import('../page/details/details')  //详情页
-const login = () => import('../page/login/login') //登录页
-const register = () => import('../page/register/register') //注册页
-const shopping = () => import('../page/shopping/shopping') //购物车
-const payment = () => import('../page/payment/payment') //支付
-const personal = () => import('../page/personal/personal') //个人中心
-const personalOrders = () => import('../page/personal/orders/orders')
-const personalAccount = () => import('../page/personal/account/account')
-const personalAddress = () => import('../page/personal/address/address')
-const commodity = () => import('../page/commodity/commodity')  //商品页
+const msite 					= () => import('../page/msite/msite')  //首页
+const login 					= () => import('../page/login/login') //登录页
+const regSuc 					= () => import('../page/regSuc/regSuc') //注册成功页
+const details 				= () => import('../page/details/details')  //详情页
+const payment 				= () => import('../page/payment/payment') //支付
+const register 				= () => import('../page/register/register') //注册页
+const shopping 				= () => import('../page/shopping/shopping') //购物车
+const personal 				= () => import('../page/personal/personal') //个人中心
+const orderSuc 				= () => import('../page/orderSuc/orderSuc') //订单成功页
+const commodity 			= () => import('../page/commodity/commodity')  //商品页
+const addresses 			= () => import('../page/addresses/addresses') //地址页
+const personalOrders 	= () => import('../page/personal/orders/orders') //个人中心  订单
+const personalAccount = () => import('../page/personal/account/account') //个人中心  用户资料
+const personalAddress = () => import('../page/personal/address/address') //个人中心  地址
 
 
-const addresses = () => import('../page/addresses/addresses') //地址页
-const regSuc = () => import('../page/regSuc/regSuc') //注册成功页
+
 
 Vue.use(Router)
 
@@ -88,6 +90,11 @@ export default new Router({
 			path: '/regSuc',
 			name: 'regSuc',
 			component: regSuc
+		},
+		{
+			path: '/orderSuc',
+			name: 'orderSuc',
+			component: orderSuc
 		},
   ]
 })
