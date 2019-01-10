@@ -7,13 +7,17 @@
                     <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3969814012,482639741&fm=27&gp=0.jpg" alt="">
                     <p>用户名</p>
                 </div>
-                <router-link tag="li" to="/personal/orders">我的订单</router-link>
-                <router-link tag="li" to="/personal/account">账户资料</router-link>
-                <router-link tag="li" to="/personal/address">收货地址</router-link>
+                <router-link :class="{check:indexs==0}" tag="li" to="/personal/orders"  @click.native="indexs=0">我的订单</router-link>
+                <router-link :class="{check:indexs==1}" tag="li" to="/personal/account" @click.native="indexs=1">账户资料</router-link>
+                <router-link :class="{check:indexs==2}" tag="li" to="/personal/address" @click.native="indexs=2">收货地址</router-link>
             </ul>
-            <div class="view-container">
-                <router-view></router-view>
-            </div>
+			<div class="view-container">
+				<transition name="router-slid" mode="out-in">
+						<!-- <div class="view-container"> -->
+							<router-view></router-view>
+						<!-- </div> -->
+				</transition>
+			</div>
         </div>
 		<h2 v-if="userId == 0">
 			<i class="iconfont icon-cuowu"></i>
@@ -32,6 +36,13 @@ export default {
         headerTop,
         Footer
     },
+	data(){
+		return{
+			indexs:0
+		}
+	},
+	methods: {
+	},
 	computed:{
 		...mapState(['userId'])
 	}
@@ -65,6 +76,9 @@ export default {
             width: 100%;
             padding: 0.625rem;
             list-style-type:none;
+			&.check{
+				background: #f3f3f3;
+			}
         }
         li:hover{
             background: #f3f3f3;
@@ -73,10 +87,19 @@ export default {
         }
     }
     .view-container{
+		overflow: hidden;
         width: 85%;
+		min-height: 700px;
         margin: 50px;
         margin-left: 0;
         border: 0.0625rem solid #ccc;
+		.router-slid-enter-active, .router-slid-leave-active {
+				transition: all .6s;
+		}
+		.router-slid-enter, .router-slid-leave-active {
+				transform: translate3d(60rem, 0, 0);
+				opacity: 0;
+		}
     }
 }
 h2{

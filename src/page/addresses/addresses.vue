@@ -355,7 +355,12 @@
 			
 			//提交订单
 			subOder(){
-				this.$router.push({path: '/payment', query: {modes: this.modes,subAddressId:this.subAddressId}})
+				if(this.addressLists.length != 0){
+					this.$router.push({path: '/payment', query: {modes: this.modes,subAddressId:this.subAddressId}})
+				}else{
+					this.$message.error('请选择收货地址！');
+				}
+				// this.$router.push({path: '/payment', query: {modes: this.modes,subAddressId:this.subAddressId}})
 			}
 		},
 		computed: {
