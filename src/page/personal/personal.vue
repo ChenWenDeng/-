@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="personal-box">
         <headerTop/>
         <div class="personal-container" v-if="userId != 0">
             <ul class="personal-ul">
@@ -13,9 +13,8 @@
             </ul>
 			<div class="view-container">
 				<transition name="router-slid" mode="out-in">
-						<!-- <div class="view-container"> -->
-							<router-view></router-view>
-						<!-- </div> -->
+					<router-view>
+					</router-view>
 				</transition>
 			</div>
         </div>
@@ -50,16 +49,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.personal-box{
+	min-width: 1519px;
+	background: #f3f3f3;
+}
 .personal-container{
     width: 100%;
     min-height: 700px;
     display: flex;
     .personal-ul{
         width: 18%;
+		min-width: 240px;
         margin: 50px;
         padding: 0;
         border: 0.0625rem solid #ccc;
         border-radius: 0.625rem;
+		background: #fff;
         div{
             display: flex;
             flex-direction: column;
@@ -89,10 +94,12 @@ export default {
     .view-container{
 		overflow: hidden;
         width: 85%;
+		min-width: 1127px;
 		min-height: 700px;
         margin: 50px;
         margin-left: 0;
         border: 0.0625rem solid #ccc;
+		background: #fff;
 		.router-slid-enter-active, .router-slid-leave-active {
 				transition: all .6s;
 		}

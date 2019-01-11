@@ -49,11 +49,12 @@ export default {
         if (!value) {
           return callback(new Error('账户不能为空'));
         }
-        var uPattern = /^[a-zA-Z0-9_-]{4,16}$/;
+        // var uPattern = /^[a-zA-Z0-9_-]{4,16}$/;
+				var uPattern = /^(?!\d+$)[A-Za-z0-9_\u4e00-\u9fa5]{3,16}$/;
         if(uPattern.test(value)){
             callback();
         }else{
-            return callback(new Error('账户格式不正确'));
+            return callback(new Error('账户要求3-16位由字母、数字、_或汉字组成、不能由纯数字组成'));
         }
       };
       var validatePass = (rule, value, callback) => {

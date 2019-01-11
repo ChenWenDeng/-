@@ -1,25 +1,62 @@
 <template>
     <div class="rating_page">
-       account。。。
+		<div class="personal-data">
+			<h2>个人资料</h2>
+			<p><span>用户账号：</span>{{account.userName}}</p>
+			<p><span>手机号码：</span>{{account.phone}}</p>
+			<p><span>邮箱地址：</span>{{account.eliam}}</p>
+			<p><span>创建时间：</span>{{account.createDate}}</p>
+		</div>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
-    name: 'account'
+    name: 'account',
+	data(){
+		return{
+			account:{}
+		}
+	},
+	methods:{
+		accountInfo(){
+			axios.get("/users/account").then((response) =>{
+				let res = response.data;
+				if(res.status == "0"){					
+					console.log('orders成功')
+					this.account = res.result		
+					
+				}else if(res.status == '10020'){
+					this.notLogin = true
+					console.log('失败'+res.msg)
+				}
+			})
+		}
+	},
+	mounted(){
+		this.accountInfo()
+		
+	}
 }
 </script>
 
 <style lang="scss" scoped>
 .rating_page{
-//     position: absolute;
-// 	top: 0;
-// 	left: 0;
-// 	right: 0;
-// 	bottom: 0;
-//     background-color: #f2f2f2;
-//     z-index: 202;
-    // padding-top: 2.5rem;
+	.personal-data{
+		padding: 50px ;
+		h2{
+			// width: 128px;
+			margin-bottom: 20px;
+			color: cornflowerblue;
+			border-bottom: 2px solid cornflowerblue;
+		}
+		p{
+			span{
+				color: #999;
+			}
+		}
+	}
 	.router-slid-enter-active, .router-slid-leave-active {
 		transition: all .4s;
 	}

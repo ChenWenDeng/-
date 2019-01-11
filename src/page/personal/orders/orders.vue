@@ -10,31 +10,30 @@
 		</ul>
 		<ul class="body-ul" v-for="(item, index) in filteredItems(this.startIndex,this.endIndex)" :key="index">
 			<p>
-				<span class="date-text">{{item.createDate}}</span>
+				<span class="date-text">下单时间 : {{item.createDate}}</span>
 				<span>订单号：{{item.orderId}}</span>
 			</p>
 			<ul v-for="(goods, index) in item.goodsList" :key="index">
 				<li>
-					<img :src="goods.smImg[0]" alt="">
+					<img v-lazy="goods.smImg[0]" :key="goods.smImg[0]" alt="">
 					<span class="productTitle">{{goods.productName}}</span>
 				</li>
 				<li>{{goods.salePrice}}</li>
 				<li>{{goods.num}}</li>
 				<li>商品操作</li>
 			</ul>
-			<li class="payment-li" v-for="(goods, index) in item.goodsList" :key="index">
-				<li>实付款</li>
-			</li>
-			<li class="state-li">交易状态</li>
+			<li class="payment-li">{{item.totalPrice}}</li>
+			<li class="state-li">{{item.orderStatus==1?'成功':'失败'}}</li>
 		</ul>
 		<el-pagination
 			@current-change="handleCurrentChange"
-			:current-page="page"
+			:current-page="1"
 			:page-sizes="[4]" 
 							
 			layout="total, sizes, prev, pager, next, jumper"
-			:total="ordersList.length">    
+			:total="ordersList.length" v-if="ordersList.length!=0">    
 		</el-pagination>
+		<h2 v-if="ordersList.length==0">暂时没订单，客官，快去下订单吧！<router-link to="/" class="btn btn-info btn-lg">去首页</router-link></h2>
     </div>
 </template>
 
@@ -45,26 +44,23 @@ export default {
 	data(){
 		return{
 			ordersList:[],//订单列表数据
-			
 			totalList:0,//数据总长度
-			page: 1, //分页
-			pageSize: 5, //每页8条数据
-			startIndex : 0,
+			startIndex : 0, 
 			endIndex: 4,
-			goods: []
+			goods: [],
 		}
 	},
 	methods:{
 		orderInfo(){
-			axios.post("/users/ordersList",{
-				page: this.page,
-				pageSize: this.pageSize,
-			}).then((response) =>{
+			axios.get("/users/ordersList").then((response) =>{
 				let res = response.data;
 				if(res.status == "0"){					
 					console.log('orders成功')
 					this.ordersList = res.result
-					console.log(this.ordersList)		
+					// console.log(this.ordersList)
+					//将订单列表反转
+					this.ordersList.reverse()
+					
 				}else if(res.status == '10020'){
 					this.notLogin = true
 					console.log('失败'+res.msg)
@@ -83,16 +79,26 @@ export default {
 				return this.ordersList.slice(start, end)
 			}
 		},
+
 	},
 	mounted(){
 		this.orderInfo()
+		
 	}
 }
 </script>
 
 <style lang="scss" scoped>
 .rating_page{
-	z-index: -1;
+	h2{
+		width: 100%;
+		min-height: 656px;
+		margin-bottom: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding-bottom: 22px;
+	}
 	.header-ul{
 		list-style:none;
 		display: flex;
@@ -110,6 +116,9 @@ export default {
 			justify-content: center;
 		}
 	}
+	.body-ul:hover{
+		background: 		#F8F8FF;
+	}
 	.body-ul{
 		list-style:none;
 		display: flex;
@@ -118,7 +127,8 @@ export default {
 		padding-left: 0;
 		padding-top: 0;
 		border: 1px solid #f1f1f1;
-		margin-top: 10PX;
+		margin-top: 10px;
+		cursor:pointer;
 		p{
 			width: 100%;
 			background: #f3f3f3;

@@ -9,7 +9,7 @@
 				<p>订单成功，我们将尽量安排为您发货！</p>
 				<p>
 					<span class="left-span">订单号: {{orderSuc.orderId}}</span>
-					|<span class="right-span">已付金额: <b>{{ordertotal}}元</b></span>
+					|<span class="right-span">已付金额: <b>{{orderSuc.totalPrice}}元</b></span>
 				</p>
 				<p>下单时间：{{orderSuc.createDate}}</p>
 			</div>
@@ -44,9 +44,8 @@ export default {
 		   	if (res.status == '0') {
 		   		console.log('成功')
 				this.orderSuc = res.result
-				// console.log(this.orderSuc)
 				
-				console.log(this.orderSuc.goodsList)
+				console.log(this.orderSuc)
 		   	} else {
 		   		console.log('失败' + res.msg)
 		   	}
@@ -61,16 +60,6 @@ export default {
 		console.log('subAddressId===' + this.subAddressId)
 		this.orderSucInit()
 	},
-	computed: {
-		ordertotal() {
-			var total = 0
-			this.orderSuc.goodsList.forEach((item) => {
-				total += item.salePrice * item.num
-				console.log(item)
-			})
-			return total
-		},
-	}
 }
 </script>
 
