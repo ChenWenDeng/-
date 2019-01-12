@@ -2,9 +2,8 @@
 	<div class="details-container">
 		<headerTop />
 		<!--  商品列表=========================================================  -->
-		<h2 v-if="!commodityList.length">皇上，臣妾找不到哪！呜呜呜呜呜~~~~~~</h2>
-		<div class="male-container" v-else>
-			<header class="header-container">
+		<div class="male-container" v-if="commodityList.length">
+			<header class="header-container" >
 				<span class="reveal-right">潮</span>
 				<span class="reveal-bottom">流</span>
 				<span class="reveal-top">商</span>
@@ -14,6 +13,7 @@
 					<span class="sortby">按排序:</span>
 					<a href="javascript:void(0)" class="default cur" @click="defaultSort">默认</a>
 					<a href="javascript:void(0)" class="price" @click="sortGoods">价格
+					<i class="iconfont" :class="sortFlag ? 'icon-shouqi' : 'icon-zhankai'"></i>
 					</a>
 				</div>
 			</header>
@@ -38,6 +38,7 @@
                 :total="totalList">    
             </el-pagination>
 		</div>
+		<h2 v-if="!commodityList.length">皇上，臣妾找不到哪！呜呜呜呜呜~~~~~~</h2>
 		<!-- =====================  footer  ===========================-->
 		<Footer />
 	</div>

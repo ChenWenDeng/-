@@ -49,11 +49,7 @@
 					<el-menu-item index="5" disabled>在线客服</el-menu-item>
 		</el-menu>
 		<div class="search-container">
-		<el-input class="input-container"
-				placeholder="请输入搜索内容"
-				v-model="keyWord"
-				clearable @keyup.enter.native="getSerch">
-		</el-input>
+		<input type="text" class="input-container" placeholder="请输入搜索内容" v-model="keyWord" clearable @keyup.enter="getSerch">
 		<el-button class="search-btn" type="success" @click="getSerch">搜索</el-button>
 		</div>
    </div>
@@ -115,6 +111,9 @@ export default {
 						//修改用户名状态 修改为空 退出功能
 						this.$store.dispatch('recordUser','')
 						
+						//修改用户id状态 修改为0 退出功能
+						this.$store.dispatch('recordUserId',0)
+						
 						//如果用户退出登录，修改购物车数量为0
 						this.$store.dispatch('initCartCount',0)
 						
@@ -154,7 +153,7 @@ export default {
     },
 		mounted(){
 				this.checkLogin();
-				this.getCartCount()
+				this.getCartCount();
 		},
 		computed:{
 			...mapState(['userInfo','cartCount'])
@@ -195,7 +194,6 @@ export default {
 			.input-container{
 					width: 400px;
 					margin: 30px auto;
-					
 			}
 	}	
 	.search-container{
@@ -209,11 +207,17 @@ export default {
 			z-index: 1;
 			position: relative;
 			width: 600px;
+			height: 40px;
 			margin: 30px 0;
 			margin-left: 390px;
 			border-radius: 0;
 			z-index: 1;
 			outline: none;
+			background: #000;
+			border: 1px solid #fff;
+			color: #fff;
+			padding: 0 30px;
+			text-align: center;
 		}
 		.search-btn{
 			z-index: 2;
@@ -223,7 +227,9 @@ export default {
 			width: 150px;
 			height: 40px;
 			border-radius: 0;
-			outline: none
+			outline: none;
+			background: #000;
+			border: 1px solid #fff;
 		}
 	}
 }

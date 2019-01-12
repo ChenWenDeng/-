@@ -174,24 +174,25 @@
 				</li>
 			</ul>
 		</div>
-		<!--  裤子=========================================================  -->
-		<div class="male-container">
-			<header class="header-container">
-				<span class="reveal-right">潮</span>
-				<span class="reveal-bottom">流</span>
-				<span class="reveal-top">包</span>
-				<span class="reveal-left">包</span>
+		<!--  包包=========================================================  -->
+				
+		<div class="brand-container2" style="background: #fff;">
+			<header>
+				<span class="reveal-left">潮</span>
+				<span class="reveal-top">流</span>
+				<span class="reveal-right">包</span>
+				<span class="reveal-bottom">包</span>
 			</header>
 			<ul>
-				<li class="li-container li-box" v-for="(official,index) in filteredItems(42,50) " :key="index" @click="getdetails(official.productId)">
+				<li class="li-container libox" v-for="(official,index) in filteredItems(42,50) " :key="index" @click="getdetails(official.productId)">
 					<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1545673988607&di=8962fc9d9d9cff7acb85fd6681cae8a7&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01aa2a5715ffc932f8758c9b594176.gif">
-					<div :class="'reveal-'+official.direction">
+					<i :class="'reveal-'+official.direction">
 						<img v-lazy="official.productImage" alt="">
 						<div class="Price-container">
 							<p class="title ellipsis">{{official.productName}}</p>
 							<p class="Price"><span>￥</span>{{official.salePrice}}元</p>
 						</div>
-					</div>
+					</i>
 				</li>
 			</ul>
 		</div>
@@ -665,7 +666,7 @@
 			}
 		}
 
-		.brand-container1, .brand-container{
+		.brand-container1, .brand-container,.brand-container2{
 			width: 100%;
 			padding: 50px;
 			background: #333;
@@ -764,7 +765,7 @@
 				}
 			}
 		}
-		.brand-container{
+		.brand-container,.brand-container2{
 			header{
 				width: 300px;
 				height: 50px;
@@ -790,6 +791,43 @@
 					transition: all .8s;
 					bottom: 4px;
 					z-index: 9999;
+					img:hover{
+						box-shadow: none;
+						border: none;
+						cursor:pointer;
+					}
+				}
+			}
+		}
+		
+		.brand-container2{
+			ul{
+				li{
+					transition: bottom .8 linear 0s;
+					bottom:  0px;
+					padding: 20px;
+					img{
+						margin-top:20px;
+						margin-left:20px;
+						width: 279px;
+						height: 360px;
+					}
+					.Price-container {
+						margin-top:20px;
+						margin-left:20px;
+						margin-bottom: 20px;
+						width: 279px;
+					}
+				}
+				li:hover{
+					-webkit-transform: scale(0.6.1);
+					-moz-transform: scale(1.1);
+					-ms-transform: scale(1.1);
+					-o-transform: scale(1.1);
+					transition: all .8s;
+					bottom: 4px;
+					z-index: 9999;
+					box-shadow: 0px 0px 10px 5px #aaa;
 					img:hover{
 						border: none;
 						cursor:pointer;
