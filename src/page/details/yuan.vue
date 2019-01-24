@@ -20,14 +20,6 @@
 				<div class="number-container">
 					<el-input-number v-model="num1" @change="handleChange" :min="this.detailsArr.num" :max="10" label="描述文字"></el-input-number>
 				</div>
-				<ul class="goodDetails-right-ul">
-					<span v-if="detailsArr.colours.length!=0">颜色：</span> 
-					<li :class="{check:coloursCheck==index}" v-for="(colour,index) in detailsArr.colours" :key="index" @click="btnColours($event);coloursCheck=index">{{colour}}</li>
-				</ul>
-				<ul class="goodDetails-right-ul">
-					<span v-if="detailsArr.sizes.length!=0">尺寸：</span> 
-					<li :class="{check:sizesCheck==index}" v-for="(size,index) in detailsArr.sizes" :key="index" @click="btnSizes($event);sizesCheck=index">{{size}}</li>
-				</ul>
 				<div class="button-container">
 					<button class="btn btn-danger" @click="addCart(detailsArr.productId)">加入购物车</button>
 					<!-- <button class="btn btn-primary">加入购物车</button> -->
@@ -90,31 +82,12 @@
 				detailsArr: [], //存放后台传来的数据
 				ImgUrl: [],//大图片默认显示第一张
 				reqText:'',//未登录信息
-				colours:'',//选择的颜色
-				coloursCheck:-1,//选择的颜色样式
-				sizes:'',//选择的尺寸
-				sizesCheck:-1,//选择的尺寸样式
 			}
 		},
 		computed:{
 			...mapState(['userId'])
 		},
 		methods: {
-			open3() {
-				this.$message({
-					message: '请选择颜色和尺寸！',
-					type: 'warning'
-				});
-			},
-			btnColours(e) {
-				console.log(e.target.innerHTML)
-				this.colours = e.target.innerHTML
-			},
-			btnSizes(e) {
-				console.log(e.target.innerHTML)
-				this.sizes = e.target.innerHTML
-			},
-
 			//点击小图片时将图片路径赋值给大图
 			getIndex(imgUrl) {
 				this.ImgUrl = imgUrl;
@@ -125,78 +98,56 @@
 
 			//点击加入购物车
 			addCart(index) {
-				if(this.userId!=0){
-				if(!this.colours || !this.sizes){
-					this.open3()
-				}else{
-					axios.post('/goods/addCart', {
-						userId    : this.userId,
-						productId : index,
-						num       : this.num1,
-						colours   : this.colours,
-						sizes     : this.sizes
-					}).then((response) => {
-						let res = response.data;
-						if (res.status == '0') {
-							this.centerDialogVisible = true;
-							this.cart_id = res.result.list._id
-							console.log(res.result.list._id)
-							//增加购物车数量
-							this.$store.dispatch('recordCartCount',this.num1)
-						} else {
-							if(res.status === '10001'){
-								this.reqText = res.msg
-								this.centerDialogVisible =true
-							}
+				axios.post('/goods/addCart', {
+					userId: this.userId,
+					productId: index,
+					num: this.num1
+				}).then((response) => {
+					let res = response.data;
+					if (res.status == '0') {
+						this.centerDialogVisible = true;
+						this.cart_id = res.result.list._id
+						console.log(res.result.list._id)
+						//增加购物车数量
+						this.$store.dispatch('recordCartCount',this.num1)
+					} else {
+						if(res.status === '10001'){
+							this.reqText = res.msg
+							this.centerDialogVisible =true
 						}
-					})
-				}
-				}else{
-					this.reqText = '当前未登录'
-					this.centerDialogVisible =true
-				}
+					}
+				})
 			},
 			
 			//立即购买功能
 			purchase(index){
-				if(this.userId!=0){
-				if(!this.colours || !this.sizes){
-					this.open3()
-				}else{
-					//查看购买列表是否有数据，有的话就清空
-					axios.post('/users/delPurchaseList',{
-							productId: index,
-						}).then((response) =>{
-						let res = response.data;
-						if(res.status == '0'){
-							//加入购买列表里
-							axios.post('/users/purchase',{
-									productId: index,
-									num: this.num1,
-									colours   : this.colours,
-									sizes     : this.sizes
-								}).then((response) =>{
-								let res = response.data;
-								if(res.status == '0'){
-									console.log('立即购买成功')
-								}else{
-									console.log('失败'+res.msg)
-								}
-							})
-							this.$router.push({path: '/addresses', query: {modes: 'purchase'}})
-						}else{
-							console.log('失败'+res.msg)
-							if(res.status === '10001'){
-								this.reqText = res.msg
-								this.centerDialogVisible =true
+				//查看购买列表是否有数据，有的话就清空
+				axios.post('/users/delPurchaseList',{
+						productId: index,
+					}).then((response) =>{
+					let res = response.data;
+					if(res.status == '0'){
+						//加入购买列表里
+						axios.post('/users/purchase',{
+								productId: index,
+								num: this.num1
+							}).then((response) =>{
+							let res = response.data;
+							if(res.status == '0'){
+								console.log('立即购买成功')
+							}else{
+								console.log('失败'+res.msg)
 							}
+						})
+						this.$router.push({path: '/addresses', query: {modes: 'purchase'}})
+					}else{
+						console.log('失败'+res.msg)
+						if(res.status === '10001'){
+							this.reqText = res.msg
+							this.centerDialogVisible =true
 						}
-					})
-				}
-				}else{
-					this.reqText = '当前未登录'
-					this.centerDialogVisible =true
-				}
+					}
+				})
 			},
         
 		},
@@ -291,6 +242,7 @@
 
 			.goodDetails-right {
 				width: 50%;
+
 				.title {
 					width: 80%;
 					height: 3.75rem;
@@ -325,7 +277,7 @@
 					width: 100%;
 					padding: 10px;
 					display: flex;
-					margin-bottom: 15px;
+
 					.icon-jian {
 						display: inline-block;
 						width: 20px;
@@ -351,31 +303,7 @@
 						font-size: 25px;
 					}
 				}
-				.goodDetails-right-ul{
-					width: 100%;
-					height: 50px;
-					display: flex;
-					align-items: center;
-					list-style-type:none;
-					color: #fff;
-					padding-left: 10px;
-					li{
-						width: 50px;
-						color: #fff;
-						border:1px solid #fff;
-						height: 40px;
-						display: flex;
-						justify-content: center;
-						align-items: center;
-						padding-bottom: 4px;
-						margin-right: 5px;
-						cursor:pointer;
-						&.check{
-							height: 42px;
-							border: 2px solid rgb(53, 80, 138);
-						}
-					}
-				}
+
 				.button-container {
 					width: 100%;
 					padding: 50px 10px;

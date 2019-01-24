@@ -82,6 +82,8 @@
 				<ul class="header-top">
 					<li>
 						<span>商品信息</span>
+						<span>颜色</span>
+						<span>尺寸</span>
 						<span>单价</span>
 						<span>数量</span>
 						<span>小计</span>
@@ -93,6 +95,8 @@
 							<img ref="imgs" :src="item.details[0].smImg[0]">
 							<span class="img-title">{{item.details[0].productName}}</span>
 						</span>
+						<span>{{item.details[0].colours}}</span>
+						<span>{{item.details[0].sizes}}</span>
 						<span>￥{{item.details[0].salePrice}}</span>
 						<span>x{{item.details[0].num}}</span>
 						<span>￥{{item.details[0].salePrice * item.details[0].num}}</span>
@@ -105,6 +109,8 @@
 							<img ref="imgs" :src="item.details[0].smImg[0]">
 							<span class="img-title">{{item.details[0].productName}}</span>
 						</span>
+						<span>{{item.details[0].colours}}</span>
+						<span>{{item.details[0].sizes}}</span>
 						<span>￥{{item.details[0].salePrice}}</span>
 						<span>x{{item.details[0].num}}</span>
 						<span>￥{{item.details[0].salePrice * item.details[0].num}}</span>

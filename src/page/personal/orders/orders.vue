@@ -2,6 +2,8 @@
     <div class="rating_page">
 		<ul class="header-ul">
 			<li class="liOne">宝贝</li>
+			<li>颜色</li>
+			<li>尺寸</li>
 			<li>单价</li>
 			<li>数量</li>
 			<li>商品操作</li>
@@ -18,6 +20,8 @@
 					<img v-lazy="goods.smImg[0]" :key="goods.smImg[0]" alt="">
 					<span class="productTitle">{{goods.productName}}</span>
 				</li>
+				<li>{{goods.colours}}</li>
+				<li>{{goods.sizes}}</li>
 				<li>{{goods.salePrice}}</li>
 				<li>{{goods.num}}</li>
 				<li>商品操作</li>
@@ -142,7 +146,7 @@ export default {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			width: 836px;
+			width: 905px;
 			padding: 0 20px 20px 20px;
 			li{
 				img{
@@ -159,14 +163,16 @@ export default {
 			}
 		}
 		.payment-li{
-			width: 17%;
+			width: 10%;
 			display: flex;
 			justify-content: center;
+			padding-top: 28px
 		}
 		.state-li{
 			width: 8%;
 			display: flex;
 			justify-content: center;
+			padding-top: 28px
 		}
 	}
 	.el-pagination {

@@ -230,16 +230,16 @@ export default {
 								
             }
         }
-				.input-container:hover{
-					box-shadow: 0px 0px 10px 5px #aaa;
-					-webkit-transform: scale(0.6.1);
-					-moz-transform: scale(1.1);
-					-ms-transform: scale(1.1);
-					-o-transform: scale(1.1);
-					transition: all .8s;
-					margin-bottom: 4px;
-					z-index: 9999;
-				}
+		.input-container:hover{
+			box-shadow: 0px 0px 10px 5px #aaa;
+			-webkit-transform: scale(0.6.1);
+			-moz-transform: scale(1.1);
+			-ms-transform: scale(1.1);
+			-o-transform: scale(1.1);
+			transition: all .8s;
+			margin-bottom: 4px;
+			z-index: 9999;
+		}
         .input-container{
             width: 100%;
             padding: 20px;
@@ -253,27 +253,27 @@ export default {
                     .input-con{
                         width: 350px;
                     }
-									&.input-buttom{
-										margin-bottom: 0;
-									}
+					&.input-buttom{
+						margin-bottom: 0;
+					}
                 }
                 .login-btn,.reset-btn{
                     width: 200px;
                 }
             }
-						.go-container{
-							display: flex;
-							justify-content: space-between;
-							padding: 5px 30px 30px 30px;
-							.Gologin{
-								font-size: 13px;
-								color: #c3c3c3;
-								cursor:pointer;
-							}
-							.Gologin:hover{
-								color: #999;
-							}
-						}
+			.go-container{
+				display: flex;
+				justify-content: space-between;
+				padding: 5px 30px 30px 30px;
+				.Gologin{
+					font-size: 13px;
+					color: #c3c3c3;
+					cursor:pointer;
+				}
+				.Gologin:hover{
+					color: #999;
+				}
+			}
         }
     }
 }

@@ -121,7 +121,7 @@ export default {
 								//修改用户id状态
 								this.$store.dispatch('recordUserId',this.userId)
 								
-								this.$router.push({path:'/'});
+								this.$router.push({path:'/'},'_self');
 							}else{
 								this.open6()
 							}
