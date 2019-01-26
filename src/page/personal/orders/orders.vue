@@ -24,7 +24,9 @@
 				<li>{{goods.sizes}}</li>
 				<li>{{goods.salePrice}}</li>
 				<li>{{goods.num}}</li>
-				<li>商品操作</li>
+				<li>
+					<el-button type="danger" icon="el-icon-delete" plain @click="delOrder(item.orderId)"></el-button>
+				</li>
 			</ul>
 			<li class="payment-li">{{item.totalPrice}}</li>
 			<li class="state-li">{{item.orderStatus==1?'成功':'失败'}}</li>
@@ -55,6 +57,22 @@ export default {
 		}
 	},
 	methods:{
+		//删除订单
+		delOrder(orderId){
+			axios.post("/users/delOrder",{
+				orderId:orderId
+			}).then((response) =>{
+				let res = response.data;
+				if(res.status == "0"){					
+					console.log('orders成功')
+					this.orderInfo()	
+				}else if(res.status == '10020'){
+					this.notLogin = true
+					console.log('失败'+res.msg)
+				}
+			})
+		},
+		//渲染订单列表
 		orderInfo(){
 			axios.get("/users/ordersList").then((response) =>{
 				let res = response.data;
